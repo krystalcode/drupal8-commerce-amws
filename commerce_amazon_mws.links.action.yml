@@ -1,0 +1,5 @@
+entity.commerce_amws_store.add_form:
+  route_name: entity.commerce_amws_store.add_form
+  title: 'Add a new Amazon MWS store'
+  appears_on:
+    - entity.commerce_amws_store.collection

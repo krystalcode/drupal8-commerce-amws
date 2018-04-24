@@ -1,0 +1,3 @@
+'administer commerce_amazon_mws':
+  title: 'Administer Amazon MWS integration'
+  'restrict access': TRUE
