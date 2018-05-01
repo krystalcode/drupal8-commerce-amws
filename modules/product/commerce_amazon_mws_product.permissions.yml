@@ -1,0 +1,7 @@
+'administer commerce_amws_product_type':
+  title: 'Administer Amazon MWS product types'
+  'restrict access': TRUE
+
+'administer commerce_amws_product':
+  title: 'Administer Amazon MWS products'
+  'restrict access': TRUE

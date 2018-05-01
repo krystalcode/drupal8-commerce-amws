@@ -1,0 +1,5 @@
+entity.commerce_amws_product_type.add_form:
+  route_name: entity.commerce_amws_product_type.add_form
+  title: 'Add a new Amazon MWS product type'
+  appears_on:
+    - entity.commerce_amws_product_type.collection

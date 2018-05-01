@@ -1,0 +1,60 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - commerce_amazon_mws_product.commerce_amws_product_type.default
+    - field.field.commerce_amws_product.default.stores
+  module:
+    - commerce
+id: commerce_amws_product.default.default
+targetEntityType: commerce_amws_product
+bundle: default
+mode: default
+content:
+  created:
+    type: datetime_timestamp
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 90
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  stores:
+    type: commerce_entity_select
+    weight: -10
+    settings:
+      hide_single_entity: false
+      autocomplete_threshold: 7
+      autocomplete_size: 60
+      autocomplete_placeholder: ''
+    third_party_settings: {  }
+    region: content
+  title:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 5
+    region: content
+    settings:
+      match_operator: CONTAINS
+      size: '60'
+      placeholder: ''
+    third_party_settings: {  }
+hidden: {  }

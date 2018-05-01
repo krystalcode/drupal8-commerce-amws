@@ -1,3 +1,10 @@
+commerce_amazon_mws.admin:
+  title: 'Amazon MWS'
+  description: 'Configure product and order synchronization with Amazon Marketplace Web Services'
+  parent: commerce.admin_commerce
+  route_name: commerce_amazon_mws.admin
+  weight: 10
+
 commerce_amazon_mws.configuration:
   title: 'Amazon MWS'
   description: 'Configure product and order synchronization with Amazon Marketplace Web Services'

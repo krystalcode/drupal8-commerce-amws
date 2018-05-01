@@ -1,0 +1,11 @@
+entity.commerce_amws_product_type.collection:
+  title: 'Product types'
+  description: 'Manage integration settings per product type'
+  route_name: entity.commerce_amws_product_type.collection
+  parent: commerce_amazon_mws.configuration
+
+entity.commerce_amws_product.collection:
+  title: 'Products'
+  description: 'Manage your Amazon MWS products.'
+  route_name: entity.commerce_amws_product.collection
+  parent: commerce_amazon_mws.admin

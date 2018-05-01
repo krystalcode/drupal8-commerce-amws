@@ -1,0 +1,16 @@
+commerce_amazon_mws_product.commerce_amws_product_type.*:
+  type: config_entity
+  label: 'Amazon MWS product type'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: string
+      label: 'Label'
+    description:
+      type: description
+      label: 'Description'
+    status:
+      type: boolean
+      label: 'Enabled'

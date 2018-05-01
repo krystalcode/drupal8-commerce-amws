@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - commerce_amazon_mws
+    - commerce_amazon_mws_product
+id: commerce_amws_product.stores
+field_name: stores
+entity_type: commerce_amws_product
+type: entity_reference
+settings:
+  target_type: commerce_amws_store
+module: core
+locked: true
+cardinality: -1
+translatable: false
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
