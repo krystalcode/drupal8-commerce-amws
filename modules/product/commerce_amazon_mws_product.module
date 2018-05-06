@@ -96,7 +96,12 @@ function commerce_amazon_mws_form_alter(
     return;
   }
 
-  if ($form_id === 'commerce_product_type_edit_form') {
+  // Exclude product (variation) type edit forms.
+  $type_forms = [
+    'commerce_product_type_edit_form',
+    'commerce_product_variation_type_edit_form',
+  ];
+  if (in_array($form_id, $type_forms)) {
     return;
   }
 
