@@ -1,0 +1,13 @@
+services:
+  commerce_amazon_mws_order.order_service:
+    class: Drupal\commerce_amazon_mws_order\OrderService
+    arguments: ['@entity_type.manager', '@commerce_amazon_mws.helper_service', '@commerce_amazon_mws_order.helper_service', '@datetime.time', '@event_dispatcher', '@logger.factory']
+
+  commerce_amazon_mws_order.helper_service:
+    class: Drupal\commerce_amazon_mws_order\HelperService
+    arguments: ['@entity_type.manager', '@event_dispatcher']
+
+  commerce_amazon_mws_order.order_number_subscriber:
+    class: Drupal\commerce_amazon_mws_order\EventSubscriber\OrderNumberSubscriber
+    tags:
+      - { name: event_subscriber }

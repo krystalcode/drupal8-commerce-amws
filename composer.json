@@ -1,0 +1,12 @@
+{
+    "name": "drupal/commerce_amazon_mws",
+    "type": "drupal-module",
+    "description": "A Drupal 8 module that provides integration between Drupal Commerce and Amazon MWS.",
+    "homepage": "https://www.drupal.org/sandbox/krystalcode/2959641",
+    "license": "GPL-2.0+",
+    "require": {
+        "drupal/commerce": "~8.2",
+        "cpigroup/php-amazon-mws": "~1.4.2"
+    },
+    "minimum-stability": "dev"
+}

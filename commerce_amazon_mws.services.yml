@@ -1,0 +1,3 @@
+services:
+  commerce_amazon_mws.helper_service:
+    class: Drupal\commerce_amazon_mws\HelperService

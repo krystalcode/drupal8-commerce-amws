@@ -1,0 +1,23 @@
+name: Commerce Amazon MWS Order
+type: module
+description: 'Provides integration features for syncing order from  Amazon MWS'
+package: Commerce MWS (contrib)
+core: 8.x
+dependencies:
+  - commerce_amazon_mws
+  - commerce:commerce_order
+config_devel:
+  install:
+    - commerce_order.commerce_order_item_type.amazon_mws
+    - commerce_order.commerce_order_type.amazon_mws
+    - core.entity_form_display.commerce_order.amazon_mws.default
+    - core.entity_form_display.commerce_order_item.amazon_mws.add_to_cart
+    - core.entity_form_display.commerce_order_item.amazon_mws.default
+    - core.entity_view_display.commerce_order.amazon_mws.default
+    - core.entity_view_display.commerce_order_item.amazon_mws.default
+    - field.field.commerce_order.amazon_mws.field_amws_remote_id
+    - field.field.commerce_order.amazon_mws.order_items
+    - field.field.commerce_order.amazon_mws.shipments
+    - field.field.commerce_order_item.amazon_mws.field_amws_remote_id
+    - field.storage.commerce_order.field_amws_remote_id
+    - field.storage.commerce_order_item.field_amws_remote_id
