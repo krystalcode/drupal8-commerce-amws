@@ -1,0 +1,7 @@
+commerce_amazon_mws_shipping.settings_form:
+  path: '/admin/commerce/config/amazon-mws/shipping-settings'
+  defaults:
+    _form: '\Drupal\commerce_amazon_mws_shipping\Form\SettingsForm'
+    _title: 'Shipping'
+  requirements:
+    _permission: 'administer commerce_amazon_mws'

@@ -1,0 +1,5 @@
+commerce_amazon_mws_shipping.settings_form:
+  title: 'Shipping'
+  description: 'Manage integration settings related to shipping.'
+  parent: commerce_amazon_mws.configuration
+  route_name: commerce_amazon_mws_shipping.settings_form

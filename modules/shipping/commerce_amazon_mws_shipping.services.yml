@@ -1,0 +1,10 @@
+services:
+  commerce_amazon_mws_shipping.shipment_service:
+    class: Drupal\commerce_amazon_mws_shipping\ShipmentService
+    arguments: ['@entity_type.manager', '@commerce_amazon_mws_order.helper_service', '@config.factory', '@logger.factory']
+
+  commerce_amazon_mws_shipping.order_shipment_subscriber:
+    class: Drupal\commerce_amazon_mws_shipping\EventSubscriber\OrderShipmentSubscriber
+    arguments: ['@commerce_amazon_mws_shipping.shipment_service']
+    tags:
+      - { name: event_subscriber }
