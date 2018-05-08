@@ -1,0 +1,3 @@
+'administer commerce_amazon_mws_order':
+  title: 'Administer Amazon MWS orders'
+  'restrict access': TRUE

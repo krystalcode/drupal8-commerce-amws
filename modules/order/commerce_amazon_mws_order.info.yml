@@ -21,3 +21,4 @@ config_devel:
     - field.field.commerce_order_item.amazon_mws.field_amws_remote_id
     - field.storage.commerce_order.field_amws_remote_id
     - field.storage.commerce_order_item.field_amws_remote_id
+    - views.view.commerce_amazon_mws_orders
