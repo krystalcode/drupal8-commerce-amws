@@ -2,7 +2,10 @@
 
 namespace Drupal\commerce_amazon_mws_shipping;
 
+use Drupal\commerce_amazon_mws_order\Event\ProfileEvent as AmwsProfileEvent;
+use Drupal\commerce_amazon_mws_order\Event\ProfileEvents as AmwsProfileEvents;
 use Drupal\commerce_amazon_mws_order\HelperService;
+
 use Drupal\commerce_order\Adjustment;
 use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\commerce_order\Entity\OrderItemInterface;
@@ -11,10 +14,13 @@ use Drupal\commerce_shipping\Entity\ShipmentInterface;
 use Drupal\commerce_shipping\ShipmentItem;
 use Drupal\physical\WeightUnit;
 use Drupal\profile\Entity\ProfileInterface;
+
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Provides functionality related to importing shipping data from Amazon MWS.
@@ -79,6 +85,13 @@ class ShipmentService {
   protected $shippingConfig;
 
   /**
+   * The event dispatcher.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $eventDispatcher;
+
+  /**
    * The logger channel.
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
@@ -93,6 +106,8 @@ class ShipmentService {
    * @param \Drupal\commerce_amazon_mws_order\HelperService $order_helper
    *   The helper service for converting address information to profile
    *   entities.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   *   The event dispatcher.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The configuration object factory.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
@@ -101,11 +116,13 @@ class ShipmentService {
   public function __construct(
     EntityTypeManagerInterface $entity_type_manager,
     HelperService $order_helper,
+    EventDispatcherInterface $event_dispatcher,
     ConfigFactoryInterface $config_factory,
     LoggerChannelFactoryInterface $logger_factory
   ) {
     $this->shipmentStorage = $entity_type_manager->getStorage('commerce_shipment');
     $this->orderHelper = $order_helper;
+    $this->eventDispatcher = $event_dispatcher;
     $this->shippingConfig = $config_factory->get('commerce_amazon_mws_shipping.settings');
     $this->logger = $logger_factory->get(self::LOGGER_CHANNEL);
   }
@@ -142,13 +159,24 @@ class ShipmentService {
     }
 
     $shipping_profile = $this->orderHelper->amwsAddressToCustomerProfile(
-      $amws_address,
-      $amws_order->getBuyerName(),
-      $order->getCustomerId(),
+      $order,
+      $amws_order,
       $profile_type
     );
     $shipment = $this->doCreateShipment($order, $amws_order, $shipping_profile);
+
     $order->set('shipments', [$shipment]);
+
+    // Dispatch an event that allows subscribers to modify the profile entity
+    // after it has been saved. This allows the subscriber to know whether the
+    // profile is a shipping or billing profile by knowing the profile's ID and
+    // comparing it with the order's profile IDs.
+    $event = new AmwsProfileEvent($shipping_profile, $order, $amws_order);
+    $this->eventDispatcher->dispatch(AmwsProfileEvents::PROFILE_INSERT, $event);
+
+    if ($event->getSaveProfile()) {
+      $shipping_profile->save();
+    }
   }
 
   /**

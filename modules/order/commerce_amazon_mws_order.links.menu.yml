@@ -1,0 +1,11 @@
+commerce_amazon_mws_order.configuration:
+  title: 'Orders'
+  description: 'Configure order synchronization with Amazon MWS.'
+  parent: commerce_amazon_mws.configuration
+  route_name: commerce_amazon_mws_order.configuration
+
+commerce_amazon_mws_order.settings_form:
+  title: 'Settings'
+  description: 'Manage integration settings related to orders.'
+  parent: commerce_amazon_mws_order.configuration
+  route_name: commerce_amazon_mws_order.settings_form

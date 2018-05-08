@@ -5,7 +5,6 @@ namespace Drupal\commerce_amazon_mws_order;
 use Drupal\commerce_amazon_mws\HelperService;
 use Drupal\commerce_amazon_mws_order\Event\OrderEvent as AmwsOrderEvent;
 use Drupal\commerce_amazon_mws_order\Event\OrderEvents as AmwsOrderEvents;
-use Drupal\commerce_amazon_mws_order\HelperService as OrderHelperService;
 use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -31,11 +30,6 @@ class OrderService {
    * The state which new Amazon MWS orders will be created with.
    */
   const DEFAULT_ORDER_STATE = 'completed';
-
-  /**
-   * The profile type to be used for creating the order's billing profile.
-   */
-  const DEFAULT_BILLING_PROFILE_TYPE = 'customer';
 
   /**
    * The state which new Amazon MWS order items will be created with.
@@ -76,13 +70,6 @@ class OrderService {
   protected $helper;
 
   /**
-   * The Amazon MWS order helper service.
-   *
-   * @var \Drupal\commerce_amazon_mws_order\HelperService
-   */
-  protected $orderHelper;
-
-  /**
    * The system time.
    *
    * @var \Drupal\Component\Datetime\TimeInterface
@@ -111,9 +98,6 @@ class OrderService {
    * @param \Drupal\commerce_amazon_mws\HelperService $helper
    *   The Amazon MWS helper service for converting price information to price
    *   entities.
-   * @param \Drupal\commerce_amazon_mws_order\HelperService $order_helper
-   *   The Amazon MWS order helper service for converting address information to
-   *   profile entities.
    * @param \Drupal\Component\Datetime\TimeInterface $time
    *   The system time.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
@@ -124,7 +108,6 @@ class OrderService {
   public function __construct(
     EntityTypeManagerInterface $entity_type_manager,
     HelperService $helper,
-    OrderHelperService $order_helper,
     TimeInterface $time,
     EventDispatcherInterface $event_dispatcher,
     LoggerChannelFactoryInterface $logger_factory
@@ -134,7 +117,6 @@ class OrderService {
     $this->variationStorage = $entity_type_manager->getStorage('commerce_product_variation');
 
     $this->helper = $helper;
-    $this->orderHelper = $order_helper;
     $this->time = $time;
     $this->eventDispatcher = $event_dispatcher;
     $this->logger = $logger_factory->get(self::LOGGER_CHANNEL);
@@ -230,20 +212,8 @@ class OrderService {
       $order->set('field_amws_remote_id', $amws_order_id);
     }
 
-    // Billing profile.
-    // The shipping profile is stored in the shipments.
-    $amws_address = $amws_order->getShippingAddress();
-    if ($amws_address) {
-      $billing_profile = $this->orderHelper->amwsAddressToCustomerProfile(
-        $amws_address,
-        $amws_order->getBuyerName(),
-        $order->getCustomerId(),
-        self::DEFAULT_BILLING_PROFILE_TYPE
-      );
-      $order->set('billing_profile', $billing_profile);
-    }
-
     // Allow subscribers to modify the order before being saved.
+    // Billing and shipping profiles are optionally added this way.
     $event = new AmwsOrderEvent($order, $amws_order);
     $this->eventDispatcher->dispatch(AmwsOrderEvents::ORDER_CREATE, $event);
 

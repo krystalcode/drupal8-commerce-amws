@@ -1,7 +1,7 @@
 services:
   commerce_amazon_mws_order.order_service:
     class: Drupal\commerce_amazon_mws_order\OrderService
-    arguments: ['@entity_type.manager', '@commerce_amazon_mws.helper_service', '@commerce_amazon_mws_order.helper_service', '@datetime.time', '@event_dispatcher', '@logger.factory']
+    arguments: ['@entity_type.manager', '@commerce_amazon_mws.helper_service', '@datetime.time', '@event_dispatcher', '@logger.factory']
 
   commerce_amazon_mws_order.helper_service:
     class: Drupal\commerce_amazon_mws_order\HelperService
@@ -9,5 +9,11 @@ services:
 
   commerce_amazon_mws_order.order_number_subscriber:
     class: Drupal\commerce_amazon_mws_order\EventSubscriber\OrderNumberSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  commerce_amazon_mws_order.order_billing_profile_subscriber:
+    class: Drupal\commerce_amazon_mws_order\EventSubscriber\OrderBillingProfileSubscriber
+    arguments: ['@entity_type.manager', '@event_dispatcher', '@config.factory', '@commerce_amazon_mws_order.helper_service', '@logger.factory']
     tags:
       - { name: event_subscriber }

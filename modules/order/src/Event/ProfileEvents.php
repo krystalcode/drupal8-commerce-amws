@@ -18,4 +18,17 @@ final class ProfileEvents {
    */
   const PROFILE_CREATE = 'commerce_amazon_mws_order.profile.create';
 
+  /**
+   * Name of the event fired after saving a new profile.
+   *
+   * Event subscribers can set the `saveProfile` flag to indicate that the
+   * profile has changed and should be saved again after all subscribers for
+   * this event have run.
+   *
+   * @Event
+   *
+   * @see \Drupal\commerce_amazon_mws_order\Event\ProfileEvent
+   */
+  const PROFILE_INSERT = 'commerce_amazon_mws_order.profile.insert';
+
 }

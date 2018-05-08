@@ -4,6 +4,7 @@ namespace Drupal\commerce_amazon_mws_order;
 
 use Drupal\commerce_amazon_mws_order\Event\ProfileEvent as AmwsProfileEvent;
 use Drupal\commerce_amazon_mws_order\Event\ProfileEvents as AmwsProfileEvents;
+use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -45,13 +46,10 @@ class HelperService {
   /**
    * Creates a profile for the given Amazon MWS address data.
    *
-   * @param array $amws_address
-   *   An array containing the Amazon MWS address data.
-   * @param string $buyer_name
-   *   The name of the buyer as provided by Amazon MWS.
-   * @param int|string $user_id
-   *   The ID of the user that the profile should belong to. It should normally
-   *   be the same as the owner of the order.
+   * @param \Drupal\commerce_order\Entity\OrderInterface $order
+   *   The created order that will hold the profile.
+   * @param \AmazonOrder $amws_order
+   *   The Amazon MWS order.
    * @param string $profile_type
    *   The type of the profile that will be created. Defaults to the `customer`
    *   profile type that is the default profile used by Drupal Commerce.
@@ -62,25 +60,24 @@ class HelperService {
    *   The created profile entity.
    */
   public function amwsAddressToCustomerProfile(
-    array $amws_address,
-    $buyer_name,
-    $user_id,
+    OrderInterface $order,
+    \AmazonOrder $amws_order,
     $profile_type = 'customer',
     $save = TRUE
   ) {
-    $address = $this->parseAmwsAddress($amws_address);
-    $address += $this->parseAmwsName($buyer_name);
+    $address = $this->parseAmwsAddress($amws_order->getShippingAddress());
+    $address += $this->parseAmwsName($amws_order->getBuyerName());
 
     $profile = $this->profileStorage->create([
       'type' => $profile_type,
-      'uid' => $user_id,
+      'uid' => $order->getCustomerId(),
       'address' => $address,
     ]);
 
     // Dispatch an event that allows subscribers to modify the profile entity
     // before saved and returned. Can be used to set the values of custom
     // fields.
-    $event = new AmwsProfileEvent($profile, $amws_address, $buyer_name);
+    $event = new AmwsProfileEvent($profile, $order, $amws_order);
     $this->eventDispatcher->dispatch(AmwsProfileEvents::PROFILE_CREATE, $event);
 
     if ($save) {
