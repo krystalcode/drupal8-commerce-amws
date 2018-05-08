@@ -28,7 +28,7 @@ class OrderNumberSubscriber implements EventSubscriberInterface {
    * Sets the order number, if not already set explicitly, to the order ID.
    *
    * @param \Drupal\commerce_amazon_mws_order\Event\OrderEvent $event
-   *   The transition event.
+   *   The order event.
    */
   public function setOrderNumber(AmwsOrderEvent $event) {
     /** @var \Drupal\commerce_order\Entity\OrderInterface $order */

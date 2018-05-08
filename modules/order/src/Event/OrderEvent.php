@@ -71,7 +71,7 @@ class OrderEvent extends Event {
   }
 
   /**
-   * Gets the save order flat.
+   * Gets the save order flag.
    *
    * @return bool
    *   Returns the flag indicating whether the order should be saved after all
@@ -82,7 +82,7 @@ class OrderEvent extends Event {
   }
 
   /**
-   * Sets the save order flat.
+   * Sets the save order flag.
    *
    * @param bool $save_order
    *   The flag indicating whether the order should be saved after all
