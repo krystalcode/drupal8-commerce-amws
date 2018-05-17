@@ -3,6 +3,7 @@
 namespace Drupal\commerce_amazon_mws\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Entity\EntityPublishedInterface;
 
 /**
  * Defines the interface for an Amazon MWS store.
@@ -10,7 +11,21 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  * It holds per store configuration related to Amazon MWS integration. A store
  * is essentially a marketplace for a specific seller account.
  */
-interface StoreInterface extends ConfigEntityInterface {
+interface StoreInterface extends ConfigEntityInterface, EntityPublishedInterface {
+
+  /**
+   * Indicates that the store is disabled.
+   *
+   * Disabled stores will not have their orders or products synchronized.
+   */
+  const STATUS_UNPUBLISHED = 0;
+
+  /**
+   * Indicates that the store is enabled.
+   *
+   * Only enabled stores will not have their orders or products synchronized.
+   */
+  const STATUS_PUBLISHED = 1;
 
   /**
    * Sets the label.

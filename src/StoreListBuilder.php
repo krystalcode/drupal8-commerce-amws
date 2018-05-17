@@ -16,6 +16,7 @@ class StoreListBuilder extends ConfigEntityListBuilder {
   public function buildHeader() {
     $header['label'] = $this->t('Store');
     $header['id'] = $this->t('Machine name');
+    $header['status'] = $this->t('Enabled');
     return $header + parent::buildHeader();
   }
 
@@ -25,6 +26,7 @@ class StoreListBuilder extends ConfigEntityListBuilder {
   public function buildRow(EntityInterface $entity) {
     $row['label'] = $entity->label();
     $row['id'] = $entity->id();
+    $row['status'] = $entity->isPublished() ? $this->t('Yes') : $this->t('No');
     return $row + parent::buildRow($entity);
   }
 

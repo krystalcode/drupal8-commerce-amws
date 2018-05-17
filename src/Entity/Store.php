@@ -3,6 +3,7 @@
 namespace Drupal\commerce_amazon_mws\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\commerce_amazon_mws\Entity\ConfigEntityPublishedTrait;
 
 /**
  * Defines the configuration entity for an Amazon MWS store.
@@ -33,6 +34,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "id" = "id",
  *     "label" = "label",
  *     "uuid" = "uuid",
+ *     "published" = "status",
  *   },
  *   links = {
  *     "add-form" = "/admin/commerce/config/amazon-mws/stores/add",
@@ -42,6 +44,8 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  * )
  */
 class Store extends ConfigEntityBase implements StoreInterface {
+
+  use ConfigEntityPublishedTrait;
 
   /**
    * The configuration entity ID.

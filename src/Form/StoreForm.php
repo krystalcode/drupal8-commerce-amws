@@ -2,6 +2,7 @@
 
 namespace Drupal\commerce_amazon_mws\Form;
 
+use Drupal\commerce_amazon_mws\Entity\StoreInterface as AmwsStoreInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -79,6 +80,18 @@ class StoreForm extends EntityForm {
       '#title' => $this->t('MWS Authentication Token'),
       '#default_value' => $store->getMwsAuthToken(),
       '#required' => TRUE,
+    ];
+
+    // Publication status.
+    $status = AmwsStoreInterface::STATUS_PUBLISHED;
+    if (!$store->isNew()) {
+      $status = $store->isPublished();
+    }
+    $form['status'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enabled'),
+      '#description' => $this->t('Only enabled stores will have their orders and products synchronized with Amazon MWS.'),
+      '#default_value' => $status,
     ];
 
     return $form;
