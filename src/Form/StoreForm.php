@@ -68,6 +68,12 @@ class StoreForm extends EntityForm {
       '#default_value' => $store->getAwsAccessKeyId(),
       '#required' => TRUE,
     ];
+    $form['credentials']['secret_key'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Secret key'),
+      '#default_value' => $store->getSecretKey(),
+      '#required' => TRUE,
+    ];
     $form['credentials']['mws_auth_token'] = [
       '#type' => 'textfield',
       '#title' => $this->t('MWS Authentication Token'),

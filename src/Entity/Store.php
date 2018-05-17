@@ -86,6 +86,13 @@ class Store extends ConfigEntityBase implements StoreInterface {
   protected $aws_access_key_id;
 
   /**
+   * The secret key.
+   *
+   * @var string
+   */
+  protected $secret_key;
+
+  /**
    * The MWS authentication token.
    *
    * @var string
@@ -157,6 +164,21 @@ class Store extends ConfigEntityBase implements StoreInterface {
    */
   public function setAwsAccessKeyId($aws_access_key_id) {
     $this->aws_access_key_id = $aws_access_key_id;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSecretKey() {
+    return $this->secret_key;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setSecretKey($secret_key) {
+    $this->secret_key = $secret_key;
     return $this;
   }
 

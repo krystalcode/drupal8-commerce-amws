@@ -20,6 +20,9 @@ commerce_amazon_mws.commerce_amws_store.*:
     aws_access_key_id:
       type: string
       label: 'AWS access key ID'
+    secret_key:
+      type: string
+      label: 'Secret key'
     mws_auth_token:
       type: string
       label: 'MWS authentication token'

@@ -77,6 +77,24 @@ interface StoreInterface extends ConfigEntityInterface {
   public function setAwsAccessKeyId($aws_access_key_id);
 
   /**
+   * Gets the secret key.
+   *
+   * @return string
+   *   The secret key.
+   */
+  public function getSecretKey();
+
+  /**
+   * Sets the secret key.
+   *
+   * @param string $secret_key
+   *   The secret key.
+   *
+   * @return $this
+   */
+  public function setSecretKey($secret_key);
+
+  /**
    * Gets the MWS authentication token.
    *
    * @return string
