@@ -17,3 +17,9 @@ services:
     arguments: ['@entity_type.manager', '@event_dispatcher', '@config.factory', '@commerce_amazon_mws_order.helper_service', '@logger.factory']
     tags:
       - { name: event_subscriber }
+
+  commerce_amazon_mws_order.commands:
+    class: \Drupal\commerce_amazon_mws_order\Commands\Commands
+    arguments: ['@entity_type.manager', '@commerce_amazon_mws_order.order_service', '@logger.factory']
+    tags:
+      - { name: drush.command }
