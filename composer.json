@@ -7,7 +7,7 @@
     "repositories": {
         "php-amazon-mws": {
             "type": "vcs",
-            "url": "https://github.com/krystalcode/phpAmazonMWS.git"
+            "url": "https://github.com/krystalcode/phpAmazonMWS"
         }
     },
     "require": {
