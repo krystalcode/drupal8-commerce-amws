@@ -112,6 +112,11 @@ class SettingsForm extends ConfigFormBase {
       '#title' => $this->t('Cron'),
       '#default' => $config->get('cron.status'),
     ];
+    $form['cron']['cron_status'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable importing orders during cron'),
+      '#default_value' => $config->get('cron.status'),
+    ];
     $form['cron']['cron_limit'] = [
       '#type' => 'number',
       '#title' => $this->t('Limit number of orders to import'),
@@ -166,7 +171,18 @@ class SettingsForm extends ConfigFormBase {
       ->set('billing_profile.custom_address', $profile_custom_address);
 
     // Cron settings.
-    $config->set('cron.limit', $form_state->getValue('cron_limit'));
+    $cron_status = $form_state->getValue('cron_status');
+
+    // Unset number limit if cron is disabled.
+    // Also, empty string or 0 might be submitted via the form which would still
+    // mean to import all orders. Normalize all empty values to NULL.
+    $cron_limit = $form_state->getValue('cron_limit');
+    if (!$cron_status || empty($cron_limit)) {
+      $cron_limit = NULL;
+    }
+
+    $config->set('cron.status', $cron_status)
+      ->set('cron.limit', $cron_limit);
 
     $config->save();
 

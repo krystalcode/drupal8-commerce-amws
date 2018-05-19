@@ -26,6 +26,9 @@ const COMMERCE_AMAZON_MWS_ORDER_LOGGER_CHANNEL = 'commerce_amazon_mws_order';
  */
 function commerce_amazon_mws_order_cron() {
   $config = \Drupal::service('config.factory')->get('commerce_amazon_mws_order.settings');
+  if (!$config->get('cron.status')) {
+    return;
+  }
 
   $amws_store_storage = \Drupal::service('entity_type.manager')->getStorage('commerce_amws_store');
   $order_storage = \Drupal::service('entity_type.manager')->getStorage('commerce_order');

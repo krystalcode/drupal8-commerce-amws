@@ -6,6 +6,9 @@ commerce_amazon_mws_order.settings:
       type: mapping
       label: 'Cron settings'
       mapping:
+        status:
+          type: boolean
+          label: 'Cron status'
         limit:
           type: int
           label: 'Limits the number of orders to import'
