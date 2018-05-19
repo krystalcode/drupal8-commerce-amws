@@ -214,12 +214,9 @@ display:
           entity_type: commerce_order
           plugin_id: bulk_form
         order_number:
+          id: order_number
           table: commerce_order
           field: order_number
-          id: order_number
-          entity_type: null
-          entity_field: order_number
-          plugin_id: field
           relationship: none
           group_type: group
           admin_label: ''
@@ -266,7 +263,8 @@ display:
           hide_alter_empty: true
           click_sort_column: value
           type: string
-          settings: {  }
+          settings:
+            link_to_entity: true
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -277,6 +275,9 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+          entity_type: null
+          entity_field: order_number
+          plugin_id: field
         placed:
           id: placed
           table: commerce_order
