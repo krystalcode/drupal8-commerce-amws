@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws;
+namespace Drupal\commerce_amws;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;

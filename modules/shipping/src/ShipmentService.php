@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_shipping;
+namespace Drupal\commerce_amws_shipping;
 
-use Drupal\commerce_amazon_mws_order\Event\ProfileEvent as AmwsProfileEvent;
-use Drupal\commerce_amazon_mws_order\Event\ProfileEvents as AmwsProfileEvents;
-use Drupal\commerce_amazon_mws_order\HelperService;
+use Drupal\commerce_amws_order\Event\ProfileEvent as AmwsProfileEvent;
+use Drupal\commerce_amws_order\Event\ProfileEvents as AmwsProfileEvents;
+use Drupal\commerce_amws_order\HelperService;
 
 use Drupal\commerce_order\Adjustment;
 use Drupal\commerce_order\Entity\OrderInterface;
@@ -61,7 +61,7 @@ class ShipmentService {
   /**
    * The name of the logger channel to use.
    */
-  const LOGGER_CHANNEL = 'commerce_amazon_mws_shipping';
+  const LOGGER_CHANNEL = 'commerce_amws_shipping';
 
   /**
    * The shipment storage.
@@ -73,7 +73,7 @@ class ShipmentService {
   /**
    * The helper service for converting address information to profile entities.
    *
-   * @var \Drupal\commerce_amazon_mws_order\HelperService
+   * @var \Drupal\commerce_amws_order\HelperService
    */
   protected $orderHelper;
 
@@ -103,7 +103,7 @@ class ShipmentService {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
-   * @param \Drupal\commerce_amazon_mws_order\HelperService $order_helper
+   * @param \Drupal\commerce_amws_order\HelperService $order_helper
    *   The helper service for converting address information to profile
    *   entities.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
@@ -123,7 +123,7 @@ class ShipmentService {
     $this->shipmentStorage = $entity_type_manager->getStorage('commerce_shipment');
     $this->orderHelper = $order_helper;
     $this->eventDispatcher = $event_dispatcher;
-    $this->shippingConfig = $config_factory->get('commerce_amazon_mws_shipping.settings');
+    $this->shippingConfig = $config_factory->get('commerce_amws_shipping.settings');
     $this->logger = $logger_factory->get(self::LOGGER_CHANNEL);
   }
 

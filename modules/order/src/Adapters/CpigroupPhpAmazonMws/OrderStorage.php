@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order\Adapters\CpigroupPhpAmazonMws;
+namespace Drupal\commerce_amws_order\Adapters\CpigroupPhpAmazonMws;
 
-use Drupal\commerce_amazon_mws\Entity\StoreInterface as AmwsStoreInterface;
-use Drupal\commerce_amazon_mws_order\Adapters\OrderStorageInterface as AmwsOrderStorageInterface;
-use Drupal\commerce_amazon_mws_order\OrderService as AmwsOrderService;
+use Drupal\commerce_amws\Entity\StoreInterface as AmwsStoreInterface;
+use Drupal\commerce_amws_order\Adapters\OrderStorageInterface as AmwsOrderStorageInterface;
+use Drupal\commerce_amws_order\OrderService as AmwsOrderService;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Psr\Log\LoggerInterface;
 
@@ -30,7 +30,7 @@ class OrderStorage implements AmwsOrderStorageInterface {
   /**
    * The Amazon MWS order service.
    *
-   * @var \Drupal\commerce_amazon_mws_order\OrderService
+   * @var \Drupal\commerce_amws_order\OrderService
    */
   protected $amwsOrderService;
 
@@ -44,11 +44,11 @@ class OrderStorage implements AmwsOrderStorageInterface {
   /**
    * Constructs a new OrderStorage object.
    *
-   * @param \Drupal\commerce_amazon_mws\Entity\StoreInterface $amws_store
+   * @param \Drupal\commerce_amws\Entity\StoreInterface $amws_store
    *   The Amazon MWS store that the order list object will be created for.
    * @param \Drupal\Core\Entity\EntityStorageInterface $order_storage
    *   The Drupal Commerce order storage.
-   * @param \Drupal\commerce_amazon_mws_order\OrderService $amws_order_service
+   * @param \Drupal\commerce_amws_order\OrderService $amws_order_service
    *   The Amazon MWS order service.
    * @param \Psr\Log\LoggerInterface $logger
    *   The logger service.
@@ -224,7 +224,7 @@ class OrderStorage implements AmwsOrderStorageInterface {
    *
    * @param string $mode
    *   The mode to format. See corresponding constants defined at
-   *   \Drupal\commerce_amazon_mws_order\Adapters\OrderStorageInterface::FILTER_TIME_MODE_*.
+   *   \Drupal\commerce_amws_order\Adapters\OrderStorageInterface::FILTER_TIME_MODE_*.
    *
    * @return string
    *   The mode in the expected format.
@@ -400,7 +400,7 @@ class OrderStorage implements AmwsOrderStorageInterface {
   /**
    * Prepares the Amazon MWS configuration as expected by `php-amazon-mws`.
    *
-   * @param \Drupal\commerce_amazon_mws\Entity\StoreInterface $amws_store
+   * @param \Drupal\commerce_amws\Entity\StoreInterface $amws_store
    *   The Amazon MWS store that the order list object will be created for.
    *
    * @return array

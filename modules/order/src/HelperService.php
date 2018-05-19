@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order;
+namespace Drupal\commerce_amws_order;
 
-use Drupal\commerce_amazon_mws_order\Event\ProfileEvent as AmwsProfileEvent;
-use Drupal\commerce_amazon_mws_order\Event\ProfileEvents as AmwsProfileEvents;
+use Drupal\commerce_amws_order\Event\ProfileEvent as AmwsProfileEvent;
+use Drupal\commerce_amws_order\Event\ProfileEvents as AmwsProfileEvents;
 use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

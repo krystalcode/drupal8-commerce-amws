@@ -1,0 +1,9 @@
+name: Commerce Amazon MWS
+type: module
+description: 'Provides integration features for Amazon MWS'
+package: Commerce Amazon MWS (contrib)
+core: 8.x
+dependencies:
+  - commerce
+  - system (>=8.3.0)
+configure: commerce_amws.configuration

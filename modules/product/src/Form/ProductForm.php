@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_product\Form;
+namespace Drupal\commerce_amws_product\Form;
 
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
@@ -74,7 +74,7 @@ class ProductForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /* @var \Drupal\commerce_amazon_mws\Entity\ProductInterface $amws_product */
+    /* @var \Drupal\commerce_amws\Entity\ProductInterface $amws_product */
     $amws_product = $this->getEntity();
 
     // For new products, we should be given the corresponding product ID via
@@ -93,7 +93,7 @@ class ProductForm extends ContentEntityForm {
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
-    /* @var \Drupal\commerce_amazon_mws\Entity\ProductInterface $amws_product */
+    /* @var \Drupal\commerce_amws\Entity\ProductInterface $amws_product */
     $amws_product = $this->getEntity();
 
     if ($amws_product->isNew()) {
@@ -197,7 +197,7 @@ class ProductForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\commerce_amazon_mws\Entity\ProductInterface $amws_product */
+    /** @var \Drupal\commerce_amws\Entity\ProductInterface $amws_product */
     $amws_product = $this->getEntity();
     $amws_product->save();
 

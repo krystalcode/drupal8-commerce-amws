@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws;
+namespace Drupal\commerce_amws;
 
 use Drupal\commerce_price\Price;
 

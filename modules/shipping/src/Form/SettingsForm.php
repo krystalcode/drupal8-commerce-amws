@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_shipping\Form;
+namespace Drupal\commerce_amws_shipping\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -51,21 +51,21 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'commerce_amazon_mws_shipping_settings';
+    return 'commerce_amws_shipping_settings';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['commerce_amazon_mws_shipping.settings'];
+    return ['commerce_amws_shipping.settings'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('commerce_amazon_mws_shipping.settings');
+    $config = $this->config('commerce_amws_shipping.settings');
 
     // Shipping method.
     $method_options = [];
@@ -89,7 +89,7 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('commerce_amazon_mws_shipping.settings')
+    $this->config('commerce_amws_shipping.settings')
       ->set(
         'shipping_method_id',
         $form_state->getValue('shipping_method_id')

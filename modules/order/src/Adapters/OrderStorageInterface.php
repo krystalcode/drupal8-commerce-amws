@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order\Adapters;
+namespace Drupal\commerce_amws_order\Adapters;
 
 /**
  * Defines the interface for Amazon MWS order storage adapters.

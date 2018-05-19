@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_product;
+namespace Drupal\commerce_amws_product;
 
-use Drupal\commerce_amazon_mws_product\Entity\ProductType;
+use Drupal\commerce_amws_product\Entity\ProductType;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 
@@ -25,10 +25,10 @@ class ProductListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /** @var \Drupal\commerce_amazon_mws_product\Entity\ProductInterface $product */
+    /** @var \Drupal\commerce_amws_product\Entity\ProductInterface $product */
     $product = $entity;
 
-    /** @var \Drupal\commerce_amazon_mws_product\Entity\ProductTypeInterface $product_type */
+    /** @var \Drupal\commerce_amws_product\Entity\ProductTypeInterface $product_type */
     $product_type = ProductType::load($product->bundle());
     $product_type = ProductType::load('default');
 

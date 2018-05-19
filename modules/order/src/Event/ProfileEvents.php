@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order\Event;
+namespace Drupal\commerce_amws_order\Event;
 
 /**
  * Defines the names of events related to Amazon MWS order profiles.
@@ -14,9 +14,9 @@ final class ProfileEvents {
    *
    * @Event
    *
-   * @see \Drupal\commerce_amazon_mws_order\Event\ProfileEvent
+   * @see \Drupal\commerce_amws_order\Event\ProfileEvent
    */
-  const PROFILE_CREATE = 'commerce_amazon_mws_order.profile.create';
+  const PROFILE_CREATE = 'commerce_amws_order.profile.create';
 
   /**
    * Name of the event fired after saving a new profile.
@@ -27,8 +27,8 @@ final class ProfileEvents {
    *
    * @Event
    *
-   * @see \Drupal\commerce_amazon_mws_order\Event\ProfileEvent
+   * @see \Drupal\commerce_amws_order\Event\ProfileEvent
    */
-  const PROFILE_INSERT = 'commerce_amazon_mws_order.profile.insert';
+  const PROFILE_INSERT = 'commerce_amws_order.profile.insert';
 
 }

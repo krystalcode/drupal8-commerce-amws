@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws\Entity;
+namespace Drupal\commerce_amws\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;

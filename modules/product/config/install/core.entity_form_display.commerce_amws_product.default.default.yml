@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - commerce_amazon_mws_product.commerce_amws_product_type.default
+    - commerce_amws_product.commerce_amws_product_type.default
     - field.field.commerce_amws_product.default.stores
   module:
     - commerce

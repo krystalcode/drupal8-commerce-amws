@@ -1,0 +1,31 @@
+services:
+  commerce_amws_order.order_service:
+    class: Drupal\commerce_amws_order\OrderService
+    arguments: ['@entity_type.manager', '@commerce_amws.helper_service', '@datetime.time', '@event_dispatcher', '@logger.factory']
+
+  commerce_amws_order.helper_service:
+    class: Drupal\commerce_amws_order\HelperService
+    arguments: ['@entity_type.manager', '@event_dispatcher']
+
+  commerce_amws_order.order_number_subscriber:
+    class: Drupal\commerce_amws_order\EventSubscriber\OrderNumberSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  commerce_amws_order.order_billing_profile_subscriber:
+    class: Drupal\commerce_amws_order\EventSubscriber\OrderBillingProfileSubscriber
+    arguments: ['@entity_type.manager', '@event_dispatcher', '@config.factory', '@commerce_amws_order.helper_service', '@logger.factory']
+    tags:
+      - { name: event_subscriber }
+
+  commerce_amws_order.commands:
+    class: \Drupal\commerce_amws_order\Commands\Commands
+    arguments: ['@entity_type.manager', '@commerce_amws_order.order_service', '@logger.factory']
+    tags:
+      - { name: drush.command }
+
+  commerce_amws_order.dev_commands:
+    class: \Drupal\commerce_amws_order\Commands\DevCommands
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: drush.command }

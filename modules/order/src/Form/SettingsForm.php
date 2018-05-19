@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order\Form;
+namespace Drupal\commerce_amws_order\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -54,21 +54,21 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'commerce_amazon_mws_order_settings';
+    return 'commerce_amws_order_settings';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['commerce_amazon_mws_order.settings'];
+    return ['commerce_amws_order.settings'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('commerce_amazon_mws_order.settings');
+    $config = $this->config('commerce_amws_order.settings');
 
     // Billing profile.
     $form['billing_profile'] = [
@@ -149,7 +149,7 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $config = $this->config('commerce_amazon_mws_order.settings');
+    $config = $this->config('commerce_amws_order.settings');
 
     // Billing profile settings.
     $profile_status = $form_state->getValue('billing_profile_status');

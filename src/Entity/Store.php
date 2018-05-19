@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws\Entity;
+namespace Drupal\commerce_amws\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\commerce_amazon_mws\Entity\ConfigEntityPublishedTrait;
+use Drupal\commerce_amws\Entity\ConfigEntityPublishedTrait;
 
 /**
  * Defines the configuration entity for an Amazon MWS store.
@@ -19,16 +19,16 @@ use Drupal\commerce_amazon_mws\Entity\ConfigEntityPublishedTrait;
  *     plural = "@count Amazon MWS stores",
  *   ),
  *   handlers = {
- *     "list_builder" = "Drupal\commerce_amazon_mws\StoreListBuilder",
+ *     "list_builder" = "Drupal\commerce_amws\StoreListBuilder",
  *     "form" = {
- *       "add" = "Drupal\commerce_amazon_mws\Form\StoreForm",
- *       "edit" = "Drupal\commerce_amazon_mws\Form\StoreForm",
+ *       "add" = "Drupal\commerce_amws\Form\StoreForm",
+ *       "edit" = "Drupal\commerce_amws\Form\StoreForm",
  *     },
  *     "route_provider" = {
  *       "default" = "Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider",
  *     },
  *   },
- *   admin_permission = "administer commerce_amazon_mws",
+ *   admin_permission = "administer commerce_amws",
  *   config_prefix = "commerce_amws_store",
  *   entity_keys = {
  *     "id" = "id",

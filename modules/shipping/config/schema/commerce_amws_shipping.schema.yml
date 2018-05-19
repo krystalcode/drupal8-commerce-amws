@@ -1,0 +1,7 @@
+commerce_amws_shipping.settings:
+  type: config_object
+  label: 'Amazon MWS shipping settings'
+  mapping:
+    shipping_method_id:
+      type: integer
+      label: 'Shipping method'

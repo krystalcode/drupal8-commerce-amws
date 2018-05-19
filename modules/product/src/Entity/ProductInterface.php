@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_product\Entity;
+namespace Drupal\commerce_amws_product\Entity;
 
 use Drupal\user\EntityOwnerInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -51,7 +51,7 @@ interface ProductInterface extends ContentEntityInterface, EntityChangedInterfac
   /**
    * Gets the stores.
    *
-   * @return \Drupal\commerce_amazon_mws\Entity\StoreInterface[]
+   * @return \Drupal\commerce_amws\Entity\StoreInterface[]
    *   The stores.
    */
   public function getStores();
@@ -59,7 +59,7 @@ interface ProductInterface extends ContentEntityInterface, EntityChangedInterfac
   /**
    * Sets the stores.
    *
-   * @param \Drupal\commerce_amazon_mws\Entity\StoreInterface[] $stores
+   * @param \Drupal\commerce_amws\Entity\StoreInterface[] $stores
    *   The stores.
    *
    * @return $this

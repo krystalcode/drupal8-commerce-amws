@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order\Event;
+namespace Drupal\commerce_amws_order\Event;
 
 use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\profile\Entity\ProfileInterface;
@@ -9,7 +9,7 @@ use Symfony\Component\EventDispatcher\Event;
 /**
  * Defines the profile event.
  *
- * @see \Drupal\commerce_amazon_mws_order\Event\ProfileEvents
+ * @see \Drupal\commerce_amws_order\Event\ProfileEvents
  */
 class ProfileEvent extends Event {
 

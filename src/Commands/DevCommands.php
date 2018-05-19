@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws\Commands;
+namespace Drupal\commerce_amws\Commands;
 
 /**
  * Drush commands that provide operations related to Amazon MWS.
@@ -12,9 +12,9 @@ class DevCommands extends DevCommandsBase {
   /**
    * Deletes all Amazon MWS stores.
    *
-   * @command commerce-amazon-mws:dev-delete-stores
+   * @command commerce-amws:dev-delete-stores
    *
-   * @validate-module-enabled commerce_amazon_mws
+   * @validate-module-enabled commerce_amws
    *
    * @aliases camws:dev-delete-stores, camws-dev-ds
    */
@@ -25,9 +25,9 @@ class DevCommands extends DevCommandsBase {
   /**
    * Deletes all entities managed by the Amazon MWS module.
    *
-   * @command commerce-amazon-mws:dev-delete-entities
+   * @command commerce-amws:dev-delete-entities
    *
-   * @validate-module-enabled commerce_amazon_mws
+   * @validate-module-enabled commerce_amws
    *
    * @aliases camws:dev-delete-entities, camws-dev-de
    */

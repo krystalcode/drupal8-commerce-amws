@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_shipping\EventSubscriber;
+namespace Drupal\commerce_amws_shipping\EventSubscriber;
 
-use Drupal\commerce_amazon_mws_order\Event\OrderEvent as AmwsOrderEvent;
-use Drupal\commerce_amazon_mws_order\Event\OrderEvents as AmwsOrderEvents;
-use Drupal\commerce_amazon_mws_shipping\ShipmentService;
+use Drupal\commerce_amws_order\Event\OrderEvent as AmwsOrderEvent;
+use Drupal\commerce_amws_order\Event\OrderEvents as AmwsOrderEvents;
+use Drupal\commerce_amws_shipping\ShipmentService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -18,14 +18,14 @@ class OrderShipmentSubscriber implements EventSubscriberInterface {
   /**
    * The Amazon MWS shipment service.
    *
-   * @var \Drupal\commerce_amazon_mws_shipping\ShipmentService
+   * @var \Drupal\commerce_amws_shipping\ShipmentService
    */
   protected $shipmentService;
 
   /**
    * Constructs a new OrderShipmentsSubscriber object.
    *
-   * @param \Drupal\commerce_amazon_mws_shipping\ShipmentService $shipment_service
+   * @param \Drupal\commerce_amws_shipping\ShipmentService $shipment_service
    *   The Amazon MWS shipment service.
    */
   public function __construct(ShipmentService $shipment_service) {
@@ -45,7 +45,7 @@ class OrderShipmentSubscriber implements EventSubscriberInterface {
   /**
    * Generates the shipments for the order, if not already set.
    *
-   * @param \Drupal\commerce_amazon_mws_order\Event\OrderEvent $event
+   * @param \Drupal\commerce_amws_order\Event\OrderEvent $event
    *   The profile event.
    */
   public function setShipment(AmwsOrderEvent $event) {

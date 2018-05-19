@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order;
+namespace Drupal\commerce_amws_order;
 
-use Drupal\commerce_amazon_mws\HelperService;
-use Drupal\commerce_amazon_mws_order\Event\OrderEvent as AmwsOrderEvent;
-use Drupal\commerce_amazon_mws_order\Event\OrderEvents as AmwsOrderEvents;
+use Drupal\commerce_amws\HelperService;
+use Drupal\commerce_amws_order\Event\OrderEvent as AmwsOrderEvent;
+use Drupal\commerce_amws_order\Event\OrderEvents as AmwsOrderEvents;
 use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -19,7 +19,7 @@ class OrderService {
   /**
    * The order type used for new Amazon MWS orders.
    */
-  const DEFAULT_ORDER_TYPE = 'amazon_mws';
+  const DEFAULT_ORDER_TYPE = 'commerce_amws';
 
   /**
    * The ID of the user to whom new Amazon MWS orders will be assigned.
@@ -34,12 +34,12 @@ class OrderService {
   /**
    * The state which new Amazon MWS order items will be created with.
    */
-  const DEFAULT_ORDER_ITEM_TYPE = 'amazon_mws';
+  const DEFAULT_ORDER_ITEM_TYPE = 'commerce_amws';
 
   /**
    * The name of the logger channel to use.
    */
-  const LOGGER_CHANNEL = 'commerce_amazon_mws_order';
+  const LOGGER_CHANNEL = 'commerce_amws_order';
 
   /**
    * The order storage.
@@ -65,7 +65,7 @@ class OrderService {
   /**
    * The Amazon MWS helper service.
    *
-   * @var \Drupal\commerce_amazon_mws\HelperService
+   * @var \Drupal\commerce_amws\HelperService
    */
   protected $helper;
 
@@ -95,7 +95,7 @@ class OrderService {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
-   * @param \Drupal\commerce_amazon_mws\HelperService $helper
+   * @param \Drupal\commerce_amws\HelperService $helper
    *   The Amazon MWS helper service for converting price information to price
    *   entities.
    * @param \Drupal\Component\Datetime\TimeInterface $time

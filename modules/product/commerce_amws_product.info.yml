@@ -1,0 +1,15 @@
+name: Commerce Amazon MWS Product
+type: module
+description: 'Provides integration features for syncing products to Amazon MWS'
+package: Commerce Amazon MWS (contrib)
+core: 8.x
+dependencies:
+  - commerce_amws
+  - commerce:commerce_product
+config_devel:
+  install:
+    - commerce_amws_product.commerce_amws_product_type.default
+    - core.entity_form_display.commerce_amws_product.default.default
+    - core.entity_view_display.commerce_amws_product.default.default
+    - field.storage.commerce_amws_product.stores
+    - field.field.commerce_amws_product.default.stores

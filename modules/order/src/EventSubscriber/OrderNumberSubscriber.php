@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order\EventSubscriber;
+namespace Drupal\commerce_amws_order\EventSubscriber;
 
-use Drupal\commerce_amazon_mws_order\Event\OrderEvent as AmwsOrderEvent;
-use Drupal\commerce_amazon_mws_order\Event\OrderEvents as AmwsOrderEvents;
+use Drupal\commerce_amws_order\Event\OrderEvent as AmwsOrderEvent;
+use Drupal\commerce_amws_order\Event\OrderEvents as AmwsOrderEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -27,7 +27,7 @@ class OrderNumberSubscriber implements EventSubscriberInterface {
   /**
    * Sets the order number, if not already set explicitly, to the order ID.
    *
-   * @param \Drupal\commerce_amazon_mws_order\Event\OrderEvent $event
+   * @param \Drupal\commerce_amws_order\Event\OrderEvent $event
    *   The order event.
    */
   public function setOrderNumber(AmwsOrderEvent $event) {

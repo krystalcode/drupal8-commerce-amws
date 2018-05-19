@@ -1,0 +1,19 @@
+commerce_amws.admin:
+  title: 'Amazon MWS'
+  description: 'Configure product and order synchronization with Amazon Marketplace Web Services'
+  parent: commerce.admin_commerce
+  route_name: commerce_amws.admin
+  weight: 10
+
+commerce_amws.configuration:
+  title: 'Amazon MWS'
+  description: 'Configure product and order synchronization with Amazon Marketplace Web Services'
+  parent: commerce.configuration
+  route_name: commerce_amws.configuration
+  weight: 10
+
+entity.commerce_amws_store.collection:
+  title: 'Stores'
+  description: 'Manage integration settings per Amazon MWS store'
+  route_name: entity.commerce_amws_store.collection
+  parent: commerce_amws.configuration

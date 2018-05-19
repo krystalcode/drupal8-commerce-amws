@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_product\Entity;
+namespace Drupal\commerce_amws_product\Entity;
 
 use Drupal\user\UserInterface;
 use Drupal\Core\Entity\ContentEntityBase;
@@ -24,10 +24,10 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   ),
  *   bundle_label = @Translation("Product type"),
  *   handlers = {
- *     "list_builder" = "Drupal\commerce_amazon_mws_product\ProductListBuilder",
+ *     "list_builder" = "Drupal\commerce_amws_product\ProductListBuilder",
  *     "form" = {
- *       "add" = "Drupal\commerce_amazon_mws_product\Form\ProductForm",
- *       "edit" = "Drupal\commerce_amazon_mws_product\Form\ProductForm",
+ *       "add" = "Drupal\commerce_amws_product\Form\ProductForm",
+ *       "edit" = "Drupal\commerce_amws_product\Form\ProductForm",
  *     },
  *     "route_provider" = {
  *       "default" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
@@ -169,7 +169,7 @@ class Product extends ContentEntityBase implements ProductInterface {
       ->setDescription(t('The product author.'))
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\commerce_amazon_mws_product\Entity\Product::getCurrentUserId')
+      ->setDefaultValueCallback('Drupal\commerce_amws_product\Entity\Product::getCurrentUserId')
       ->setTranslatable(TRUE)
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayOptions('form', [

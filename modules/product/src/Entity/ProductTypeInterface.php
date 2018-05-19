@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_product\Entity;
+namespace Drupal\commerce_amws_product\Entity;
 
 use Drupal\Core\Entity\EntityDescriptionInterface;
 

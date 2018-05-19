@@ -1,0 +1,15 @@
+commerce_amws.admin:
+  path: '/admin/commerce/amazon-mws'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Amazon MWS'
+  requirements:
+    _permission: 'administer commerce_amws'
+
+commerce_amws.configuration:
+  path: '/admin/commerce/config/amazon-mws'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Amazon MWS'
+  requirements:
+    _permission: 'administer commerce_amws'

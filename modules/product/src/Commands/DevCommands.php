@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_product\Commands;
+namespace Drupal\commerce_amws_product\Commands;
 
-use Drupal\commerce_amazon_mws\Commands\DevCommandsBase;
+use Drupal\commerce_amws\Commands\DevCommandsBase;
 
 /**
  * Drush commands that provide operations related to Amazon MWS products.
@@ -14,9 +14,9 @@ class DevCommands extends DevCommandsBase {
   /**
    * Deletes all Amazon MWS products.
    *
-   * @command commerce-amazon-mws-product:dev-delete-products
+   * @command commerce-amws-product:dev-delete-products
    *
-   * @validate-module-enabled commerce_amazon_mws_product
+   * @validate-module-enabled commerce_amws_product
    *
    * @aliases camwsp:dev-delete-products, camwsp-dev-dp
    */
@@ -27,9 +27,9 @@ class DevCommands extends DevCommandsBase {
   /**
    * Deletes all Amazon MWS product types.
    *
-   * @command commerce-amazon-mws-product:dev-delete-product-types
+   * @command commerce-amws-product:dev-delete-product-types
    *
-   * @validate-module-enabled commerce_amazon_mws_product
+   * @validate-module-enabled commerce_amws_product
    *
    * @aliases camwsp:dev-delete-product-types, camwsp-dev-dpt
    *
@@ -42,9 +42,9 @@ class DevCommands extends DevCommandsBase {
   /**
    * Deletes all entities managed by the Amazon MWS product module.
    *
-   * @command commerce-amazon-mws-product:dev-delete-entities
+   * @command commerce-amws-product:dev-delete-entities
    *
-   * @validate-module-enabled commerce_amazon_mws_product
+   * @validate-module-enabled commerce_amws_product
    *
    * @aliases camwsp:dev-delete-entities, camwsp-dev-de
    */

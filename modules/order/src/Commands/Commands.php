@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order\Commands;
+namespace Drupal\commerce_amws_order\Commands;
 
-use Drupal\commerce_amazon_mws\Entity\StoreInterface as AmwsStoreInterface;
-use Drupal\commerce_amazon_mws_order\Adapters\CpigroupPhpAmazonMws\OrderStorage as AmwsOrderStorage;
-use Drupal\commerce_amazon_mws_order\OrderService;
+use Drupal\commerce_amws\Entity\StoreInterface as AmwsStoreInterface;
+use Drupal\commerce_amws_order\Adapters\CpigroupPhpAmazonMws\OrderStorage as AmwsOrderStorage;
+use Drupal\commerce_amws_order\OrderService;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\DrushCommands;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
@@ -31,7 +31,7 @@ class Commands extends DrushCommands {
   /**
    * The Amazon MWS order service.
    *
-   * @var \Drupal\commerce_amazon_mws_order\OrderService
+   * @var \Drupal\commerce_amws_order\OrderService
    */
   protected $amwsOrderService;
 
@@ -50,7 +50,7 @@ class Commands extends DrushCommands {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
-   * @param \Drupal\commerce_amazon_mws_order\OrderService $amws_order_service
+   * @param \Drupal\commerce_amws_order\OrderService $amws_order_service
    *   The Amazon MWS order service.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger factory.
@@ -64,15 +64,15 @@ class Commands extends DrushCommands {
     $this->orderStorage = $entity_type_manager->getStorage('commerce_order');
 
     $this->amwsOrderService = $amws_order_service;
-    $this->moduleLogger = $logger_factory->get(COMMERCE_AMAZON_MWS_ORDER_LOGGER_CHANNEL);
+    $this->moduleLogger = $logger_factory->get(COMMERCE_AMWS_ORDER_LOGGER_CHANNEL);
   }
 
   /**
    * Imports orders for all enabled Amazon MWS stores.
    *
-   * @command commerce-amazon-mws-order:import-orders
+   * @command commerce-amws-order:import-orders
    *
-   * @validate-module-enabled commerce_amazon_mws_order
+   * @validate-module-enabled commerce_amws_order
    *
    * @aliases camwso:import-orders, camwso-io
    */

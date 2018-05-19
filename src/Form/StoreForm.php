@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws\Form;
+namespace Drupal\commerce_amws\Form;
 
-use Drupal\commerce_amazon_mws\Entity\StoreInterface as AmwsStoreInterface;
+use Drupal\commerce_amws\Entity\StoreInterface as AmwsStoreInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -18,7 +18,7 @@ class StoreForm extends EntityForm {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
 
-    /** @var \Drupal\commerce_amazon_mws\Entity\StoreInterface $store */
+    /** @var \Drupal\commerce_amws\Entity\StoreInterface $store */
     $store = $this->entity;
 
     // Human label, machine name and description.
@@ -33,7 +33,7 @@ class StoreForm extends EntityForm {
       '#type' => 'machine_name',
       '#default_value' => $store->id(),
       '#machine_name' => [
-        'exists' => '\Drupal\commerce_amazon_mws\Entity\Store::load',
+        'exists' => '\Drupal\commerce_amws\Entity\Store::load',
       ],
       '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
     ];

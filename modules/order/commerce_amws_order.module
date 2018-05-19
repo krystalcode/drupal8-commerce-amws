@@ -1,0 +1,66 @@
+<?php
+
+/**
+ * @file
+ * Provides functionality for the Commerce Amazon MWS Order module.
+ */
+
+use Drupal\commerce_amws\Entity\StoreInterface as AmwsStoreInterface;
+use Drupal\commerce_amws_order\Adapters\CpigroupPhpAmazonMws\OrderStorage as AmwsOrderStorage;
+
+/**
+ * Constants.
+ */
+
+/**
+ * The name of the logger channel to use throughout this module.
+ */
+const COMMERCE_AMWS_ORDER_LOGGER_CHANNEL = 'commerce_amws_order';
+
+/**
+ * Hooks.
+ */
+
+/**
+ * Implements hook_cron().
+ */
+function commerce_amws_order_cron() {
+  $config = \Drupal::service('config.factory')->get('commerce_amws_order.settings');
+  if (!$config->get('cron.status')) {
+    return;
+  }
+
+  $amws_store_storage = \Drupal::service('entity_type.manager')->getStorage('commerce_amws_store');
+  $order_storage = \Drupal::service('entity_type.manager')->getStorage('commerce_order');
+  $amws_order_service = \Drupal::service('commerce_amws_order.order_service');
+  $logger = \Drupal::service('logger.factory')->get(COMMERCE_AMWS_ORDER_LOGGER_CHANNEL);
+
+  $amws_store_ids = $amws_store_storage
+    ->getQuery()
+    ->condition('status', AmwsStoreInterface::STATUS_PUBLISHED)
+    ->execute();
+
+  if (!$amws_store_ids) {
+    return;
+  }
+
+  $limit = $config->get('cron.limit');
+
+  $amws_stores = $amws_store_storage->loadMultiple($amws_store_ids);
+  foreach ($amws_stores as $amws_store) {
+    $amws_order_storage = new AmwsOrderStorage(
+      $amws_store,
+      $order_storage,
+      $amws_order_service,
+      $logger
+    );
+
+    $options = [];
+    if ($limit) {
+      $options['post_filters']['limit'] = $limit;
+    }
+
+    $amws_order_storage->import($options);
+    unset($amws_order_storage);
+  }
+}

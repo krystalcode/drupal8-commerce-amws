@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order\EventSubscriber;
+namespace Drupal\commerce_amws_order\EventSubscriber;
 
-use Drupal\commerce_amazon_mws_order\Event\OrderEvent as AmwsOrderEvent;
-use Drupal\commerce_amazon_mws_order\Event\OrderEvents as AmwsOrderEvents;
-use Drupal\commerce_amazon_mws_order\Event\ProfileEvent as AmwsProfileEvent;
-use Drupal\commerce_amazon_mws_order\Event\ProfileEvents as AmwsProfileEvents;
-use Drupal\commerce_amazon_mws_order\Form\SettingsForm as OrderConfig;
-use Drupal\commerce_amazon_mws_order\HelperService as OrderHelperService;
+use Drupal\commerce_amws_order\Event\OrderEvent as AmwsOrderEvent;
+use Drupal\commerce_amws_order\Event\OrderEvents as AmwsOrderEvents;
+use Drupal\commerce_amws_order\Event\ProfileEvent as AmwsProfileEvent;
+use Drupal\commerce_amws_order\Event\ProfileEvents as AmwsProfileEvents;
+use Drupal\commerce_amws_order\Form\SettingsForm as OrderConfig;
+use Drupal\commerce_amws_order\HelperService as OrderHelperService;
 
 use Drupal\commerce_order\Entity\OrderInterface;
 
@@ -34,7 +34,7 @@ class OrderBillingProfileSubscriber implements EventSubscriberInterface {
   /**
    * The name of the logger channel to use.
    */
-  const LOGGER_CHANNEL = 'commerce_amazon_mws_order';
+  const LOGGER_CHANNEL = 'commerce_amws_order';
 
   /**
    * The profile storage.
@@ -60,7 +60,7 @@ class OrderBillingProfileSubscriber implements EventSubscriberInterface {
   /**
    * The Amazon MWS order helper service.
    *
-   * @var \Drupal\commerce_amazon_mws_order\HelperService
+   * @var \Drupal\commerce_amws_order\HelperService
    */
   protected $orderHelper;
 
@@ -80,7 +80,7 @@ class OrderBillingProfileSubscriber implements EventSubscriberInterface {
    *   The event dispatcher.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The configuration object factory.
-   * @param \Drupal\commerce_amazon_mws_order\HelperService $order_helper
+   * @param \Drupal\commerce_amws_order\HelperService $order_helper
    *   The Amazon MWS order helper service for converting address information to
    *   profile entities.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
@@ -95,7 +95,7 @@ class OrderBillingProfileSubscriber implements EventSubscriberInterface {
   ) {
     $this->profileStorage = $entity_type_manager->getStorage('profile');
     $this->eventDispatcher = $event_dispatcher;
-    $this->orderConfig = $config_factory->get('commerce_amazon_mws_order.settings');
+    $this->orderConfig = $config_factory->get('commerce_amws_order.settings');
     $this->orderHelper = $order_helper;
     $this->logger = $logger_factory->get(self::LOGGER_CHANNEL);
   }
@@ -113,7 +113,7 @@ class OrderBillingProfileSubscriber implements EventSubscriberInterface {
   /**
    * Sets the billing profile for the order, if not already set explicitly.
    *
-   * @param \Drupal\commerce_amazon_mws_order\Event\OrderEvent $event
+   * @param \Drupal\commerce_amws_order\Event\OrderEvent $event
    *   The order event.
    */
   public function setBillingProfile(AmwsOrderEvent $event) {

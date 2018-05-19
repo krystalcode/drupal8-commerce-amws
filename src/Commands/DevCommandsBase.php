@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws\Commands;
+namespace Drupal\commerce_amws\Commands;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\DrushCommands;

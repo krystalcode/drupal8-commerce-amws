@@ -1,5 +1,5 @@
 {
-    "name": "drupal/commerce_amazon_mws",
+    "name": "drupal/commerce_amws",
     "type": "drupal-module",
     "description": "A Drupal 8 module that provides integration between Drupal Commerce and Amazon MWS.",
     "homepage": "https://www.drupal.org/sandbox/krystalcode/2959641",

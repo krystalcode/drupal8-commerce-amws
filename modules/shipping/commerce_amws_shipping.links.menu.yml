@@ -1,0 +1,11 @@
+commerce_amws_shipping.configuration:
+  title: 'Shipping'
+  description: 'Configure shipping related to order synchronization with Amazon MWS.'
+  parent: commerce_amws.configuration
+  route_name: commerce_amws_shipping.configuration
+
+commerce_amws_shipping.settings_form:
+  title: 'Settings'
+  description: 'Manage integration settings related to shipping.'
+  parent: commerce_amws_shipping.configuration
+  route_name: commerce_amws_shipping.settings_form

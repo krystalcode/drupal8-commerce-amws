@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order\Event;
+namespace Drupal\commerce_amws_order\Event;
 
 use Drupal\commerce_order\Entity\OrderInterface;
 use Symfony\Component\EventDispatcher\Event;
@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\Event;
 /**
  * Defines the order event.
  *
- * @see \Drupal\commerce_amazon_mws_order\Event\OrderEvents
+ * @see \Drupal\commerce_amws_order\Event\OrderEvents
  */
 class OrderEvent extends Event {
 

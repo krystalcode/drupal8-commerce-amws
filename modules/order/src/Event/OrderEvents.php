@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_order\Event;
+namespace Drupal\commerce_amws_order\Event;
 
 /**
  * Defines the names of events related to Amazon MWS orders.
@@ -14,9 +14,9 @@ final class OrderEvents {
    *
    * @Event
    *
-   * @see \Drupal\commerce_amazon_mws_order\Event\OrderEvent
+   * @see \Drupal\commerce_amws_order\Event\OrderEvent
    */
-  const ORDER_CREATE = 'commerce_amazon_mws_order.commerce_order.create';
+  const ORDER_CREATE = 'commerce_amws_order.commerce_order.create';
 
   /**
    * Name of the event fired after saving a new order.
@@ -27,8 +27,8 @@ final class OrderEvents {
    *
    * @Event
    *
-   * @see \Drupal\commerce_amazon_mws_order\Event\OrderEvent
+   * @see \Drupal\commerce_amws_order\Event\OrderEvent
    */
-  const ORDER_INSERT = 'commerce_amazon_mws_order.commerce_order.insert';
+  const ORDER_INSERT = 'commerce_amws_order.commerce_order.insert';
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_product\Form;
+namespace Drupal\commerce_amws_product\Form;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -17,7 +17,7 @@ class ProductTypeForm extends EntityForm {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
 
-    /** @var \Drupal\commerce_amazon_mws_product\Entity\ProductTypeInterface $product_type */
+    /** @var \Drupal\commerce_amws_product\Entity\ProductTypeInterface $product_type */
     $product_type = $this->entity;
 
     // Human label, machine name and description.
@@ -32,7 +32,7 @@ class ProductTypeForm extends EntityForm {
       '#type' => 'machine_name',
       '#default_value' => $product_type->id(),
       '#machine_name' => [
-        'exists' => '\Drupal\commerce_amazon_mws\Entity\Store::load',
+        'exists' => '\Drupal\commerce_amws\Entity\Store::load',
       ],
       '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
     ];

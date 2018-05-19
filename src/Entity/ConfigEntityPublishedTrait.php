@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws\Entity;
+namespace Drupal\commerce_amws\Entity;
 
 /**
  * Provides a trait for published status for configuration entities.

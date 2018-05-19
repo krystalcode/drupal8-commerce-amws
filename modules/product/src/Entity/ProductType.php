@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\commerce_amazon_mws_product\Entity;
+namespace Drupal\commerce_amws_product\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
 
@@ -18,10 +18,10 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *     plural = "@count Amazon MWSproduct types",
  *   ),
  *   handlers = {
- *     "list_builder" = "Drupal\commerce_amazon_mws_product\ProductTypeListBuilder",
+ *     "list_builder" = "Drupal\commerce_amws_product\ProductTypeListBuilder",
  *     "form" = {
- *       "add" = "Drupal\commerce_amazon_mws_product\Form\ProductTypeForm",
- *       "edit" = "Drupal\commerce_amazon_mws_product\Form\ProductTypeForm",
+ *       "add" = "Drupal\commerce_amws_product\Form\ProductTypeForm",
+ *       "edit" = "Drupal\commerce_amws_product\Form\ProductTypeForm",
  *     },
  *     "route_provider" = {
  *       "default" = "Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider",

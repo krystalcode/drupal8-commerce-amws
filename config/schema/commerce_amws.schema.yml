@@ -1,0 +1,28 @@
+commerce_amws.commerce_amws_store.*:
+  type: config_entity
+  label: 'Amazon MWS store'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: string
+      label: 'Label'
+    description:
+      type: description
+      label: 'Description'
+    seller_id:
+      type: string
+      label: 'Seller ID'
+    marketplace_id:
+      type: string
+      label: 'Marketplace ID'
+    aws_access_key_id:
+      type: string
+      label: 'AWS access key ID'
+    secret_key:
+      type: string
+      label: 'Secret key'
+    mws_auth_token:
+      type: string
+      label: 'MWS authentication token'
