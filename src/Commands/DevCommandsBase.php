@@ -34,11 +34,37 @@ class DevCommandsBase extends DrushCommands {
    *
    * @param string[] $entity_type_ids
    *   The IDs of the entity types for which to delete all entities.
+   * @param array $properties
+   *   An associative array keyed by property/field names and containing
+   *   property/field values. Only entities matching these values will be
+   *   deleted.
    */
-  protected function doDeleteEntities(array $entity_type_ids) {
+  protected function doDeleteEntities(
+    array $entity_type_ids,
+    array $properties = []
+  ) {
     foreach ($entity_type_ids as $entity_type_id) {
+      $entities = [];
       $storage = $this->entityTypeManager->getStorage($entity_type_id);
-      $entities = $storage->loadMultiple();
+
+      // Load all entities if there are no conditions.
+      if (!$properties) {
+        $entities = $storage->loadMultiple();
+      }
+      // Otherwise, make an load only entities matching the conditions.
+      else {
+        $query = $storage->getQuery();
+        foreach ($properties as $property => $value) {
+          $query->condition($property, $value);
+        }
+        $entity_ids = $query->execute();
+        if (!$entity_ids) {
+          continue;
+        }
+
+        $entities = $storage->loadMultiple($entity_ids);
+      }
+
       $storage->delete($entities);
     }
   }

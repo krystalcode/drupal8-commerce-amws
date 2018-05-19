@@ -12,7 +12,7 @@ use Drupal\commerce_amazon_mws\Commands\DevCommandsBase;
 class DevCommands extends DevCommandsBase {
 
   /**
-   * Deletes all orders that correspond to imported Amazon MWS stores.
+   * Deletes all orders imported from Amazon MWS.
    *
    * @command commerce-amazon-mws-order:dev-delete-orders
    *
@@ -21,18 +21,40 @@ class DevCommands extends DevCommandsBase {
    * @aliases camwso:dev-delete-orders, camwso-dev-do
    */
   public function deleteOrders() {
-    $order_storage = $this->entityTypeManager->getStorage('commerce_order');
+    $this->doDeleteEntities(
+      ['commerce_order'],
+      ['type' => 'amazon_mws']
+    );
+  }
 
-    $order_ids = $order_storage
-      ->getQuery()
-      ->condition('type', 'amazon_mws')
-      ->execute();
-    if (!$order_ids) {
-      return;
-    }
+  /**
+   * Deletes all order items that belong to orders imported from Amazon MWS.
+   *
+   * @command commerce-amazon-mws-order:dev-delete-order-items
+   *
+   * @validate-module-enabled commerce_amazon_mws_order
+   *
+   * @aliases camwso:dev-delete-order-items, camwso-dev-doi
+   */
+  public function deleteOrderItems() {
+    $this->doDeleteEntities(
+      ['commerce_order_item'],
+      ['type' => 'amazon_mws']
+    );
+  }
 
-    $orders = $order_storage->loadMultiple($order_ids);
-    $order_storage->delete($orders);
+  /**
+   * Deletes all entities managed by the Amazon MWS order module.
+   *
+   * @command commerce-amazon-mws-order:dev-delete-entities
+   *
+   * @validate-module-enabled commerce_amazon_mws_order
+   *
+   * @aliases camwso:dev-delete-entities, camwso-dev-de
+   */
+  public function deleteEntities() {
+    $this->deleteOrders();
+    $this->deleteOrdersItems();
   }
 
 }
