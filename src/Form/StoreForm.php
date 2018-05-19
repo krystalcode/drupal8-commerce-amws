@@ -5,7 +5,6 @@ namespace Drupal\commerce_amazon_mws\Form;
 use Drupal\commerce_amazon_mws\Entity\StoreInterface as AmwsStoreInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -38,7 +37,6 @@ class StoreForm extends EntityForm {
       ],
       '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
     ];
-
     $form['description'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Description'),

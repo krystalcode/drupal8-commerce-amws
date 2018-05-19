@@ -4,8 +4,9 @@ description: 'Provides integration features for syncing order from  Amazon MWS'
 package: Commerce MWS (contrib)
 core: 8.x
 dependencies:
-  - commerce_amazon_mws
+  - commerce_amazon_mws:commerce_amazon_mws
   - commerce:commerce_order
+configure: commerce_amazon_mws_order.configuration
 config_devel:
   install:
     - commerce_order.commerce_order_item_type.amazon_mws

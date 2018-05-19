@@ -6,3 +6,4 @@ core: 8.x
 dependencies:
   - commerce_amazon_mws:commerce_amazon_mws_order
   - commerce_shipping
+configure: commerce_amazon_mws_shipping.configuration
