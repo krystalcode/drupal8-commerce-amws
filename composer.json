@@ -6,7 +6,7 @@
     "license": "GPL-2.0+",
     "repositories": {
         "php-amazon-mws": {
-            "type": "path",
+            "type": "vcs",
             "url": "https://github.com/krystalcode/phpAmazonMWS.git"
         }
     },
