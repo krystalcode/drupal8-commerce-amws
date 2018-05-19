@@ -12,12 +12,7 @@
     },
     "require": {
         "drupal/commerce": "~8.2",
-        "cpigroup/php-amazon-mws": "~2.0.0"
+        "cpigroup/php-amazon-mws": "2.0.0"
     },
-    "minimum-stability": "dev",
-    "extra": {
-        "branch-alias": {
-            "config": "1.4.x-dev"
-        }
-    }
+    "minimum-stability": "dev"
 }
