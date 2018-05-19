@@ -83,6 +83,10 @@ interface OrderStorageInterface {
    *       that have not been imported yet (i.e. do not have corresponding
    *       Drupal Commerce orders), or only orders that have already been
    *       imported. See self::POST_FILTER_IMPORT_STATE_* constants.
+   *     - limit: The number of orders to return. Being a post-filtering
+   *       operation, it will not limit the number of orders fetched from Amazon
+   *       MWS; instead, it will limit the number of results returned by the
+   *       function from those fetched from Amazon MWS.
    *
    * @return \AmazonOrder[]
    *   An array containing the fetched and filtered Amazon MWS order objects.
@@ -97,7 +101,11 @@ interface OrderStorageInterface {
    *
    * Importing orders in this context means to create corresponding Drupal
    * Commerce order entities.
+   *
+   * @param array $options
+   *   An array of options defining which orders to fetch. See
+   *   self::loadMultiple() for a list of available options.
    */
-  public function import();
+  public function import(array $options);
 
 }

@@ -70,6 +70,7 @@ class SettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('commerce_amazon_mws_order.settings');
 
+    // Billing profile.
     $form['billing_profile'] = [
       '#type' => 'details',
       '#title' => $this->t('Billing profile'),
@@ -105,32 +106,69 @@ class SettingsForm extends ConfigFormBase {
       ],
     ];
 
+    // Cron settings.
+    $form['cron'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Cron'),
+      '#default' => $config->get('cron.status'),
+    ];
+    $form['cron']['cron_limit'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Limit number of orders to import'),
+      '#description' => $this->t('You may limit the number of orders that will be imported during each cron run. Leave empty to import all orders provided by Amazon MWS.'),
+      '#default_value' => $config->get('cron.limit'),
+      '#states' => [
+        'visible' => [
+          ':input[name="cron_status"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
   /**
    * {@inheritdoc}
    */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $cron_limit = $form_state->getValue('cron_limit');
+    if (!ctype_digit($cron_limit) && !empty($cron_limit)) {
+      $form_state->setErrorByName(
+        'cron_limit',
+        $this->t('The limit of orders to import must be a positive integer number or empty.')
+      );
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $status = $form_state->getValue('billing_profile_status');
+    $config = $this->config('commerce_amazon_mws_order.settings');
+
+    // Billing profile settings.
+    $profile_status = $form_state->getValue('billing_profile_status');
 
     // Unset source if billing profile is disabled.
-    $source = NULL;
-    if ($status) {
-      $source = $form_state->getValue('billing_profile_source');
+    $profile_source = NULL;
+    if ($profile_status) {
+      $profile_source = $form_state->getValue('billing_profile_source');
     }
 
     // Custom billing information.
-    $custom_address = NULL;
-    if ($source === self::BILLING_PROFILE_SOURCE_CUSTOM) {
-      $custom_address = $form_state->getValue('billing_profile_custom_address');
+    $profile_custom_address = NULL;
+    if ($profile_source === self::BILLING_PROFILE_SOURCE_CUSTOM) {
+      $profile_custom_address = $form_state->getValue('billing_profile_custom_address');
     }
 
-    $this->config('commerce_amazon_mws_order.settings')
-      ->set('billing_profile.status', $status)
-      ->set('billing_profile.source', $source)
-      ->set('billing_profile.custom_address', $custom_address)
-      ->save();
+    $config->set('billing_profile.status', $profile_status)
+      ->set('billing_profile.source', $profile_source)
+      ->set('billing_profile.custom_address', $profile_custom_address);
+
+    // Cron settings.
+    $config->set('cron.limit', $form_state->getValue('cron_limit'));
+
+    $config->save();
 
     parent::submitForm($form, $form_state);
   }

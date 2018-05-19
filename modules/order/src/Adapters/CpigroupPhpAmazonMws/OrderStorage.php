@@ -78,6 +78,11 @@ class OrderStorage implements AmwsOrderStorageInterface {
    *   When an error occurs while fetching the orders from Amazon MWS.
    */
   public function loadMultiple(array $options) {
+    $options = array_merge(
+      $this->defaultOptions(),
+      $options
+    );
+
     // Add filters to the request.
     $this->filterByTime($options);
     $this->filterByStatus($options);
@@ -111,6 +116,7 @@ class OrderStorage implements AmwsOrderStorageInterface {
 
     $amws_orders = $this->postFilterByStatus($amws_orders, $options);
     $amws_orders = $this->postFilterByImportState($amws_orders, $options);
+    $amws_orders = $this->postFilterLimit($amws_orders, $options);
 
     return $amws_orders;
   }
@@ -118,21 +124,11 @@ class OrderStorage implements AmwsOrderStorageInterface {
   /**
    * {@inheritdoc}
    */
-  public function import() {
-    $options = [
-      'statuses' => [
-        AmwsOrderStorageInterface::STATUS_PARTIALLY_SHIPPED,
-        AmwsOrderStorageInterface::STATUS_UNSHIPPED,
-      ],
-      // @I Make time filter configurable so that it can match cron frequency
-      'updated' => [
-        'after' => strtotime('-1 day'),
-      ],
-      'post_filters' => [
-        'statuses' => [AmwsOrderStorageInterface::STATUS_UNSHIPPED],
-        'import_state' => AmwsOrderStorageInterface::POST_FILTER_IMPORT_STATE_NOT_IMPORTED,
-      ],
-    ];
+  public function import(array $options = []) {
+    $options = array_merge(
+      $this->defaultOptions(),
+      $options
+    );
     $amws_orders = $this->loadMultiple($options);
 
     foreach ($amws_orders as $amws_order) {
@@ -379,6 +375,29 @@ class OrderStorage implements AmwsOrderStorageInterface {
   }
 
   /**
+   * Limits the number of the given Amazon MWS orders.
+   *
+   * @param \AmazonOrder[] $amws_orders
+   *   An array of Amazon MWS order objects.
+   * @param array $options
+   *   The array of options for the request.
+   *
+   * @return \AmazonOrder[]
+   *   An array with the filtered Amazon MWS order objects.
+   *
+   * @see self::loadMultiple()
+   *   For a description of the `['post_filters']['limit']` option and
+   *   functionality.
+   */
+  protected function postFilterLimit(array $amws_orders, array $options) {
+    if (empty($options['post_filters']['limit'])) {
+      return $amws_orders;
+    }
+
+    return array_slice($amws_orders, 0, $options['post_filters']['limit']);
+  }
+
+  /**
    * Prepares the Amazon MWS configuration as expected by `php-amazon-mws`.
    *
    * @param \Drupal\commerce_amazon_mws\Entity\StoreInterface $amws_store
@@ -403,6 +422,34 @@ class OrderStorage implements AmwsOrderStorageInterface {
       'logpath' => '',
       'logfunction' => '',
       'muteLog' => TRUE,
+    ];
+  }
+
+  /**
+   * Provides the default options for the fetching Amazon MWS orders.
+   *
+   * The default options are for fetching all Unshipped orders updated over the
+   * last one day.
+   *
+   * @return array
+   *   An array with the default options.
+   *
+   * @see self::loadMultiple()
+   */
+  protected function defaultOptions() {
+    return [
+      'statuses' => [
+        AmwsOrderStorageInterface::STATUS_PARTIALLY_SHIPPED,
+        AmwsOrderStorageInterface::STATUS_UNSHIPPED,
+      ],
+      // @I Make time filter configurable so that it can match cron frequency
+      'updated' => [
+        'after' => strtotime('-1 day'),
+      ],
+      'post_filters' => [
+        'statuses' => [AmwsOrderStorageInterface::STATUS_UNSHIPPED],
+        'import_state' => AmwsOrderStorageInterface::POST_FILTER_IMPORT_STATE_NOT_IMPORTED,
+      ],
     ];
   }
 

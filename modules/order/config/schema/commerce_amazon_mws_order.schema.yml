@@ -2,6 +2,13 @@ commerce_amazon_mws_order.settings:
   type: config_object
   label: 'Amazon MWS order settings'
   mapping:
+    cron:
+      type: mapping
+      label: 'Cron settings'
+      mapping:
+        limit:
+          type: int
+          label: 'Limits the number of orders to import'
     billing_profile:
       type: mapping
       label: 'Billing profile settings'
