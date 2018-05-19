@@ -1,0 +1,6 @@
+services:
+  commerce_amazon_mws_product.dev_commands:
+    class: \Drupal\commerce_amazon_mws_product\Commands\DevCommands
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: drush.command }
