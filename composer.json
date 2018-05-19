@@ -7,12 +7,12 @@
     "repositories": {
         "php-amazon-mws": {
             "type": "path",
-            "url": "packages/krystalcode/phpAmazonMWS"
+            "url": "https://github.com/krystalcode/phpAmazonMWS.git"
         }
     },
     "require": {
         "drupal/commerce": "~8.2",
-        "cpigroup/php-amazon-mws": "1.4.*"
+        "cpigroup/php-amazon-mws": "~2.0.0"
     },
     "minimum-stability": "dev",
     "extra": {
