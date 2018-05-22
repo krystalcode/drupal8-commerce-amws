@@ -332,7 +332,7 @@ class OrderStorage implements AmwsOrderStorageInterface {
 
     $order_ids = $this->orderStorage
       ->getQuery()
-      ->condition('field_amws_remote_id', $amws_order_ids, 'IN')
+      ->condition('amws_remote_id', $amws_order_ids, 'IN')
       ->execute();
     if (!$order_ids && $mode === AmwsOrderStorageInterface::POST_FILTER_IMPORT_STATE_NOT_IMPORTED) {
       return $amws_orders;
@@ -341,7 +341,7 @@ class OrderStorage implements AmwsOrderStorageInterface {
     $orders = $this->orderStorage->loadMultiple($order_ids);
     $amws_order_ids_imported = array_map(
       function ($order) {
-        return $order->get('field_amws_remote_id')->value;
+        return $order->get('amws_remote_id')->value;
       },
       $orders
     );

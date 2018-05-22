@@ -16,10 +16,10 @@ config_devel:
     - core.entity_form_display.commerce_order_item.commerce_amws.default
     - core.entity_view_display.commerce_order.commerce_amws.default
     - core.entity_view_display.commerce_order_item.commerce_amws.default
-    - field.field.commerce_order.commerce_amws.field_amws_remote_id
+    - field.field.commerce_order.commerce_amws.amws_remote_id
     - field.field.commerce_order.commerce_amws.order_items
     - field.field.commerce_order.commerce_amws.shipments
-    - field.field.commerce_order_item.commerce_amws.field_amws_remote_id
-    - field.storage.commerce_order.field_amws_remote_id
-    - field.storage.commerce_order_item.field_amws_remote_id
+    - field.field.commerce_order_item.commerce_amws.amws_remote_id
+    - field.storage.commerce_order.amws_remote_id
+    - field.storage.commerce_order_item.amws_remote_id
     - views.view.commerce_amws_orders

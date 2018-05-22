@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - commerce_order.commerce_order_type.commerce_amws
-    - field.field.commerce_order.commerce_amws.field_amws_remote_id
+    - field.field.commerce_order.commerce_amws.amws_remote_id
     - field.field.commerce_order.commerce_amws.order_items
     - field.field.commerce_order.commerce_amws.shipments
   module:
@@ -33,7 +33,7 @@ content:
     weight: 20
     region: content
     third_party_settings: {  }
-  field_amws_remote_id:
+  amws_remote_id:
     weight: 21
     settings:
       size: 60

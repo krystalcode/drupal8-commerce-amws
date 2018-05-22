@@ -3,9 +3,9 @@ status: true
 dependencies:
   config:
     - commerce_order.commerce_order_type.commerce_amws
-    - field.storage.commerce_order.field_amws_remote_id
-id: commerce_order.commerce_amws.field_amws_remote_id
-field_name: field_amws_remote_id
+    - field.storage.commerce_order.amws_remote_id
+id: commerce_order.commerce_amws.amws_remote_id
+field_name: amws_remote_id
 entity_type: commerce_order
 bundle: commerce_amws
 label: 'Remote ID'

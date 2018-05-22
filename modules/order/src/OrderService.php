@@ -209,7 +209,7 @@ class OrderService {
     // Remote ID.
     $amws_order_id = $amws_order->getAmazonOrderId();
     if ($amws_order_id) {
-      $order->set('field_amws_remote_id', $amws_order_id);
+      $order->set('amws_remote_id', $amws_order_id);
     }
 
     // Allow subscribers to modify the order before being saved.
@@ -246,7 +246,7 @@ class OrderService {
     $order_item = $this->orderItemStorage->create([
       'type' => self::DEFAULT_ORDER_ITEM_TYPE,
       'order_id' => $order->id(),
-      'field_amws_order_item_id' => $data['OrderItemId'],
+      'amws_order_item_id' => $data['OrderItemId'],
       'purchased_entity' => $variation->id(),
       'title' => isset($data['Title']) ? $data['Title'] : $variation->getTitle(),
       'quantity' => $data['QuantityOrdered'],

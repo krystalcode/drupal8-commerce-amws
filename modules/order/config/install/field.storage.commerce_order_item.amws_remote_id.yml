@@ -3,9 +3,9 @@ status: true
 dependencies:
   module:
     - commerce_order
-id: commerce_order.field_amws_remote_id
-field_name: field_amws_remote_id
-entity_type: commerce_order
+id: commerce_order_item.amws_remote_id
+field_name: amws_remote_id
+entity_type: commerce_order_item
 type: string
 settings:
   max_length: 255
