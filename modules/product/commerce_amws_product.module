@@ -5,8 +5,18 @@
  * Provides functionality for the Commerce Amazon MWS Product module.
  */
 
-use Drupal\commerce_product\Entity\ProductType;
+use Drupal\commerce_product\Entity\ProductTypeInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Constants.
+ */
+
+/**
+ * The prefix for form elements representing field mapping items.
+ */
+const COMMERCE_AMWS_PRODUCT_FIELD_MAPPING_FORM_ELEMENT_PREFIX = 'commerce_amws_product_field_mapping_';
 
 /**
  * Hooks.
@@ -14,6 +24,8 @@ use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ *
+ * Adds Amazon MWS integration settings per product type.
  */
 function commerce_amws_form_commerce_product_type_edit_form_alter(
   &$form,
@@ -29,6 +41,44 @@ function commerce_amws_form_commerce_product_type_edit_form_alter(
   ];
 
   // Amazon MWS integration status.
+  _commerce_amws_form_commerce_product_type_edit_form_alter__status(
+    $form,
+    $form_state,
+    $product_type
+  );
+
+  // Amazon MWS field mappings.
+  _commerce_amws_form_commerce_product_type_edit_form_alter__field_mapping(
+    $form,
+    $form_state,
+    $product_type
+  );
+
+  // Entity builder callback for setting third party settings.
+  $form['#entity_builders'][] = '_commerce_amws_product_form_commerce_product_type_edit_form_builder';
+
+  // Let's display these settings before language settings.
+  $form['language']['#weight'] = 2;
+}
+
+/**
+ * Adds status form element to product type form.
+ *
+ * Only products of types that have status enabled will be synchronized with
+ * Amazon MWS.
+ *
+ * @param array $form
+ *   The complete form render array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ * @param \Drupal\commerce_product\Entity\ProductTypeInterface $product_type
+ *   The product type being edited.
+ */
+function _commerce_amws_form_commerce_product_type_edit_form_alter__status(
+  array &$form,
+  FormStateInterface $form_state,
+  ProductTypeInterface $product_type
+) {
   $default_value = $product_type->getThirdPartySetting(
     'commerce_amws_product',
     'status'
@@ -39,12 +89,141 @@ function commerce_amws_form_commerce_product_type_edit_form_alter(
     '#description' => t('Whether to enable Amazon MWS integration for products of this type.'),
     '#default_value' => $default_value,
   ];
+}
 
-  // Entity builder callback for setting third party settings.
-  $form['#entity_builders'][] = '_commerce_amws_product_form_commerce_product_type_edit_form_builder';
+/**
+ * Adds field mapping form elements to product type form.
+ *
+ * @param array $form
+ *   The complete form render array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ * @param \Drupal\commerce_product\Entity\ProductTypeInterface $product_type
+ *   The product type being edited.
+ */
+function _commerce_amws_form_commerce_product_type_edit_form_alter__field_mapping(
+  array &$form,
+  FormStateInterface $form_state,
+  ProductTypeInterface $product_type
+) {
+  // Form element containers.
+  $form['commerce_amws_product']['field_mapping'] = [
+    '#type' => 'details',
+    '#title' => t('Field mapping'),
+    '#description' => t('By configuring field mapping you can define which field, belonging to the Commerce product entity being synced, to use as the value for the corresponding field supported by Amazon MWS API. If the corresponding Amazon MWS product entity has a value for the corresponding field, it will take precedence over the Commerce product entity field value.'),
+    '#states' => [
+      'visible' => [
+        ':input[name="commerce_amws_product_status"]' => ['checked' => TRUE],
+      ],
+    ],
+  ];
+  $form['commerce_amws_product']['field_mapping']['description_data'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Description data'),
+    '#weight' => 100,
+  ];
 
-  // Let's display these settings before language settings.
-  $form['language']['#weight'] = 2;
+  // Load current field mapping configuration and format it as a
+  // single-dimensional associative array so that it can more easily be used
+  // later on.
+  $current_field_mapping = $product_type->getThirdPartySetting(
+    'commerce_amws_product',
+    'field_mapping'
+  );
+  $current_field_mapping = array_reduce(
+    $current_field_mapping ? $current_field_mapping : [],
+    function ($carry, $item) {
+      $carry[$item['commerce_amws_product_field']] = $item['commerce_product_field'];
+      return $carry;
+    },
+    []
+  );
+
+  // Load fields available on `commerce_product` entities of the type we are
+  // currently editing.
+  $product_type_field_definitions = \Drupal::service('entity_field.manager')
+    ->getFieldDefinitions(
+      'commerce_product',
+      $product_type->id()
+    );
+
+  // Add a form element for each Amazon MWS field.
+  $field_definitions = \Drupal::service('commerce_amws_product.field_mapping')
+    ->bundleFieldDefinitions();
+  foreach ($field_definitions as $field_name => $field_definition) {
+    _commerce_amws_form_commerce_product_type_edit_form_alter__field_mapping_item(
+      $form,
+      $form_state,
+      $field_name,
+      $field_definition,
+      $current_field_mapping,
+      $product_type_field_definitions
+    );
+  }
+}
+
+/**
+ * Adds individual field mapping form element to product type form.
+ *
+ * @param array $form
+ *   The complete form render array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ * @param string $field_name
+ *   The name of the Amazon MWS field being processed.
+ * @param \Drupal\Core\Field\FieldDefinitionInterface $field_definition
+ *   The definition of the Amazon MWS field being processed.
+ * @param array $current_field_mapping
+ *   An associative array keyed by the names of the Amazon MWS fields with the
+ *   corresponding Commerce Product fields provided by the current configuration
+ *   as its values.
+ */
+function _commerce_amws_form_commerce_product_type_edit_form_alter__field_mapping_item(
+  array &$form,
+  FormStateInterface $form_state,
+  $field_name,
+  FieldDefinitionInterface $field_definition,
+  array $current_field_mapping,
+  array $product_type_field_definitions
+) {
+  // Prepare default value.
+  $default_value = NULL;
+  if (!empty($current_field_mapping[$field_name])) {
+    $default_value = $current_field_mapping[$field_name];
+  }
+  // Prepare field options.
+  $options = _commerce_amws_product_field_mapping_prepare_options(
+    $product_type_field_definitions,
+    $field_definition->getType()
+  );
+
+  // Build the form element. Display a message if there are no candidate
+  // fields available for the product type.
+  if ($options) {
+    array_unshift($options, t('Select a field'));
+    $element = [
+      '#type' => 'select',
+      '#title' => $field_definition->getLabel(),
+      '#description' => $field_definition->getDescription(),
+      '#options' => $options,
+      '#default_value' => $default_value,
+    ];
+  }
+  else {
+    $element = [
+      '#markup' => '<br /><strong>' . $field_definition->getLabel() . '</strong><br /><div>' . t('There is no field for this product type that could be matched to this Amazon MWS field.') . '</div>',
+    ];
+  }
+
+  // If the field is a description data field, add it to the corresponding
+  // sub-container.
+  $element_name = COMMERCE_AMWS_PRODUCT_FIELD_MAPPING_FORM_ELEMENT_PREFIX . $field_name;
+  if (strpos($field_name, 'amws_dd_') === 0) {
+    $form['commerce_amws_product']['field_mapping']['description_data'][$element_name] = $element;
+  }
+  else {
+    $form['commerce_amws_product']['field_mapping'][$element_name] = $element;
+  }
 }
 
 /**
@@ -53,10 +232,19 @@ function commerce_amws_form_commerce_product_type_edit_form_alter(
 
 /**
  * Entity builder callback for the `commerce_product_type` configuration entity.
+ *
+ * @param string $entity_type
+ *   The type of the entity being built.
+ * @param \Drupal\commerce_product\Entity\ProductTypeInterface $product_type
+ *   The entity being built.
+ * @param array $form
+ *   The complete form array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
  */
 function _commerce_amws_product_form_commerce_product_type_edit_form_builder(
   $entity_type,
-  ProductType $product_type,
+  ProductTypeInterface $product_type,
   array &$form,
   FormStateInterface $form_state
 ) {
@@ -67,4 +255,143 @@ function _commerce_amws_product_form_commerce_product_type_edit_form_builder(
     'status',
     $status ? TRUE : FALSE
   );
+
+  // Field mapping configuration.
+  _commerce_amws_product_form_commerce_product_type_edit_form_builder__field_mapping(
+    $entity_type,
+    $product_type,
+    $form,
+    $form_state,
+    $status
+  );
+}
+
+/**
+ * Handles field mapping properties for `commerce_product_type` entity builder.
+ *
+ * @param string $entity_type
+ *   The type of the entity being built.
+ * @param \Drupal\commerce_product\Entity\ProductTypeInterface $product_type
+ *   The entity being built.
+ * @param array $form
+ *   The complete form array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ * @param bool $status
+ *   The status of the Amazon MWS integration with the product type being built.
+ */
+function _commerce_amws_product_form_commerce_product_type_edit_form_builder__field_mapping(
+  $entity_type,
+  ProductTypeInterface $product_type,
+  array &$form,
+  FormStateInterface $form_state,
+  $status
+) {
+  // If the status is disabled don't save any changes. Don't nullify any
+  // existing values either so that when integration is enabled again the
+  // previous field mapping configuration will be the default.
+  if (!$status) {
+    return;
+  }
+
+  // Set the submitted field mapping values. They are identified by the
+  // corresponding prefix.
+  $field_mapping = [];
+  $values = $form_state->getValues();
+  foreach ($values as $key => $value) {
+    if (strpos($key, COMMERCE_AMWS_PRODUCT_FIELD_MAPPING_FORM_ELEMENT_PREFIX) !== 0) {
+      continue;
+    }
+
+    $amws_field_name = str_replace(
+      COMMERCE_AMWS_PRODUCT_FIELD_MAPPING_FORM_ELEMENT_PREFIX,
+      '',
+      $key
+    );
+    $field_mapping[] = [
+      'commerce_amws_product_field' => $amws_field_name,
+      'commerce_product_field' => $value ? $value : NULL,
+    ];
+  }
+
+  $product_type->setThirdPartySetting(
+    'commerce_amws_product',
+    'field_mapping',
+    $field_mapping
+  );
+}
+
+/**
+ * Internal API.
+ */
+
+/**
+ * Prepares the select options for a field mapping item form element.
+ *
+ * @param \Drupal\Core\Field\FieldDefinitionInterface[] $field_definitions
+ *   The field definitions provided by the product type being edited.
+ * @param string $field_type
+ *   The Amazon MWS field type being mapped.
+ */
+function _commerce_amws_product_field_mapping_prepare_options(
+  array $field_definitions,
+  $field_type
+) {
+  // Filter out fields that are not of the given type.
+  $options = array_filter(
+    $field_definitions,
+    function ($field) use ($field_type) {
+      $synonyms = _commerce_amws_product_field_mapping_type_synonyms($field_type);
+      if ($synonyms) {
+        return in_array($field->getType(), $synonyms);
+      }
+
+      return $field_type === $field->getType();
+    }
+  );
+  // Prepare the value that will be rendered as the title of the form element.
+  $options = array_map(
+    function ($field) {
+      return $field->getLabel() . ' (' . $field->getName() . ')';
+    },
+    $options
+  );
+
+  return $options;
+}
+
+/**
+ * Provides an array of field types that can be mapped to the given one.
+ *
+ * Some field types may be able to support storing, and therefore mapping,
+ * values from other related field types. For example, the `created` field type
+ * is simply an enhanced version of the `timestamp` field type and its value can
+ * be mapped to a field of type `timestamp`.
+ *
+ * @param string $field_type
+ *   The field type to get the "mappable" field types for.
+ */
+function _commerce_amws_product_field_mapping_type_synonyms($field_type) {
+  $synonyms = [
+    'timestamp' => [
+      'created',
+      'changed',
+      'timestamp',
+    ],
+    'text_long' => [
+      'text_long',
+      'text_with_summary',
+    ],
+    'decimal' => [
+      'decimal',
+      'float',
+      'integer',
+    ],
+  ];
+
+  if (isset($synonyms[$field_type])) {
+    return $synonyms[$field_type];
+  }
+
+  return FALSE;
 }

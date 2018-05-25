@@ -14,3 +14,13 @@ commerce_amws_product.commerce_amws_product_type.*:
     status:
       type: boolean
       label: 'Enabled'
+    field_mapping:
+      type: mapping
+      label: 'Field mapping'
+      mapping:
+        commerce_oamws_product_field:
+          type: string
+          label: 'Amazon MWS field name'
+        commerce_product_field:
+          type: string
+          label: 'Drupal field name'
