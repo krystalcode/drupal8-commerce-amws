@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Provides functionality for the Commerce Amazon MWS Product module.
+ */
+
+use Drupal\commerce_product\Entity\ProductType;
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Hooks.
+ */
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function commerce_amws_form_commerce_product_type_edit_form_alter(
+  &$form,
+  FormStateInterface $form_state
+) {
+  $product_type = $form_state->getFormObject()->getEntity();
+
+  $form['commerce_amws_product'] = [
+    '#type' => 'details',
+    '#title' => 'Amazon MWS integration settings',
+    '#open' => TRUE,
+    '#weight' => 1,
+  ];
+
+  // Amazon MWS integration status.
+  $default_value = $product_type->getThirdPartySetting(
+    'commerce_amws_product',
+    'status'
+  );
+  $form['commerce_amws_product']['commerce_amws_product_status'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Enabled'),
+    '#description' => t('Whether to enable Amazon MWS integration for products of this type.'),
+    '#default_value' => $default_value,
+  ];
+
+  // Entity builder callback for setting third party settings.
+  $form['#entity_builders'][] = '_commerce_amws_product_form_commerce_product_type_edit_form_builder';
+
+  // Let's display these settings before language settings.
+  $form['language']['#weight'] = 2;
+}
+
+/**
+ * Callbacks.
+ */
+
+/**
+ * Entity builder callback for the `commerce_product_type` configuration entity.
+ */
+function _commerce_amws_product_form_commerce_product_type_edit_form_builder(
+  $entity_type,
+  ProductType $product_type,
+  array &$form,
+  FormStateInterface $form_state
+) {
+  // Add enabled status.
+  $status = $form_state->getValue('commerce_amws_product_status');
+  $product_type->setThirdPartySetting(
+    'commerce_amws_product',
+    'status',
+    $status ? TRUE : FALSE
+  );
+}
