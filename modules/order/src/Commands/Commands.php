@@ -72,11 +72,15 @@ class Commands extends DrushCommands {
    *
    * @command commerce-amws-order:import-orders
    *
+   * @option $limit An integer number limiting the number of orders to import.
+   *
    * @validate-module-enabled commerce_amws_order
    *
    * @aliases camwso:import-orders, camwso-io
    */
-  public function importOrders() {
+  public function importOrders(array $options) {
+    $options = array_merge(['limit' => NULL], $options);
+
     $amws_store_ids = $this->amwsStoreStorage
       ->getQuery()
       ->condition('status', AmwsStoreInterface::STATUS_PUBLISHED)
@@ -94,7 +98,13 @@ class Commands extends DrushCommands {
         $this->amwsOrderService,
         $this->moduleLogger
       );
-      $amws_order_storage->import();
+
+      $import_options = [];
+      if ($options['limit']) {
+        $import_options['post_filters']['limit'] = $options['limit'];
+      }
+
+      $amws_order_storage->import($import_options);
       unset($amws_order_storage);
     }
   }
