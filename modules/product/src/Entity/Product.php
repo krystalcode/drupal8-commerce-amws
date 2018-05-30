@@ -13,8 +13,8 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *
  * @ContentEntityType(
  *   id = "commerce_amws_product",
- *   label = @Translation("Amazon MWS Product"),
- *   label_collection = @Translation("Amazon MWS Products"),
+ *   label = @Translation("Amazon MWS product"),
+ *   label_collection = @Translation("Amazon MWS products"),
  *   label_singular = @Translation("Amazon MWS product"),
  *   label_plural = @Translation("Amazon MWS products"),
  *   label_count = @PluralTranslation(
