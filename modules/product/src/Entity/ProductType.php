@@ -22,6 +22,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *     "form" = {
  *       "add" = "Drupal\commerce_amws_product\Form\ProductTypeForm",
  *       "edit" = "Drupal\commerce_amws_product\Form\ProductTypeForm",
+ *       "delete" = "Drupal\Core\Entity\EntityDeleteForm",
  *     },
  *     "route_provider" = {
  *       "default" = "Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider",
