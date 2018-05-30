@@ -151,6 +151,13 @@ function commerce_amws_form_commerce_product_type_edit_form_alter(
     $product_type
   );
 
+  // Amazon MWS product type.
+  _commerce_amws_form_commerce_product_type_edit_form_alter__amws_product_type(
+    $form,
+    $form_state,
+    $product_type
+  );
+
   // Amazon MWS field mappings.
   _commerce_amws_form_commerce_product_type_edit_form_alter__field_mapping(
     $form,
@@ -192,6 +199,52 @@ function _commerce_amws_form_commerce_product_type_edit_form_alter__status(
     '#title' => t('Enabled'),
     '#description' => t('Whether to enable Amazon MWS integration for products of this type.'),
     '#default_value' => $default_value,
+  ];
+}
+
+/**
+ * Adds Amazon MWS product type ID form element to product type form.
+ *
+ * Each Commerce product type is associated with an Amazon MWS product type
+ * which will be used for creating Amazon MWS products corresponding to Commerce
+ * products.
+ *
+ * @param array $form
+ *   The complete form render array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ * @param \Drupal\commerce_product\Entity\ProductTypeInterface $product_type
+ *   The product type being edited.
+ */
+function _commerce_amws_form_commerce_product_type_edit_form_alter__amws_product_type(
+  array &$form,
+  FormStateInterface $form_state,
+  ProductTypeInterface $product_type
+) {
+  $default_value = $product_type->getThirdPartySetting(
+    'commerce_amws_product',
+    'product_type_id'
+  );
+
+  $amws_product_types = \Drupal::entityTypeManager()
+    ->getStorage('commerce_amws_product_type')
+    ->loadMultiple();
+  $options = [];
+  foreach ($amws_product_types as $type) {
+    $options[$type->id()] = $type->label();
+  }
+
+  $form['commerce_amws_product']['commerce_amws_product_product_type_id'] = [
+    '#type' => 'radios',
+    '#title' => t('Amazon MWS product type'),
+    '#description' => t('The Amazon MWS product type that will be used for products of this type.'),
+    '#options' => $options,
+    '#default_value' => $default_value,
+    '#states' => [
+      'visible' => [
+        ':input[name="commerce_amws_product_status"]' => ['checked' => TRUE],
+      ],
+    ],
   ];
 }
 
@@ -359,6 +412,18 @@ function _commerce_amws_product_form_commerce_product_type_edit_form_builder(
     'status',
     $status ? TRUE : FALSE
   );
+
+  // Add product type, but only if status is enabled. Do not make any changes if
+  // status is set to disabled. This way when the status is enabled again the
+  // previous product type will be the default.
+  $product_type_id = $form_state->getValue('commerce_amws_product_product_type_id');
+  if ($status) {
+    $product_type->setThirdPartySetting(
+      'commerce_amws_product',
+      'product_type_id',
+      $product_type_id
+    );
+  }
 
   // Field mapping configuration.
   _commerce_amws_product_form_commerce_product_type_edit_form_builder__field_mapping(
