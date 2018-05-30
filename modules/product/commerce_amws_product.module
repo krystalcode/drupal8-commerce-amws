@@ -5,6 +5,7 @@
  * Provides functionality for the Commerce Amazon MWS Product module.
  */
 
+use Drupal\commerce_amws\Entity\StoreInterface as AmwsStoreInterface;
 use Drupal\commerce_amws_product\Adapters\Mcs\ProductStorage as AmwsProductRemoteStorage;
 use Drupal\commerce_product\Entity\ProductTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
