@@ -8,3 +8,9 @@ services:
     arguments: ['@entity_type.manager']
     tags:
       - { name: drush.command }
+
+  commerce_amws_product.commands:
+    class: \Drupal\commerce_amws_product\Commands\Commands
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: drush.command }
