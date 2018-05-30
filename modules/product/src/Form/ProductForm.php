@@ -77,11 +77,13 @@ class ProductForm extends ContentEntityForm {
     /* @var \Drupal\commerce_amws\Entity\ProductInterface $amws_product */
     $amws_product = $this->getEntity();
 
-    // For new products, we should be given the corresponding product ID via
+    // For new products, we may be given the corresponding product ID via
     // query parameters.
     if ($amws_product->isNew()) {
       $product_id = $this->request->query->get('commerce-product');
-      $amws_product->set('product_id', $product_id);
+      if ($product_id) {
+        $amws_product->set('product_id', $product_id);
+      }
     }
 
     return parent::buildForm($form, $form_state);
@@ -96,11 +98,9 @@ class ProductForm extends ContentEntityForm {
     /* @var \Drupal\commerce_amws\Entity\ProductInterface $amws_product */
     $amws_product = $this->getEntity();
 
-    if ($amws_product->isNew()) {
-      $form['product_id'] = [
-        '#type' => 'hidden',
-        '#default_value' => $amws_product->get('product_id')->target_id,
-      ];
+    // Do not allow altering the product ID if it has been defined in the URL.
+    if ($amws_product->isNew() && $amws_product->get('product_id')->target_id) {
+      $form['product_id']['#disabled'] = TRUE;
     }
 
     // Following the way the form is build for commerce product entities so that
@@ -184,11 +184,6 @@ class ProductForm extends ContentEntityForm {
     $form['status']['#group'] = 'visibility_settings';
     $form['stores']['#group'] = 'visibility_settings';
     $form['created']['#group'] = 'author';
-
-    // Prepopulate the title to match that of the product.
-    $title = $amws_product->get('product_id')->entity->getTitle();
-    $form['title']['widget'][0]['value']['#default_value'] = $title;
-    $form['title']['widget'][0]['value']['#attributes']['disabled'] = 'disabled';
 
     return $form;
   }
