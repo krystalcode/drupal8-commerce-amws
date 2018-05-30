@@ -1,3 +1,21 @@
+commerce_amws_product.settings:
+  type: config_object
+  label: 'Amazon MWS product settings'
+  mapping:
+    cron:
+      type: mapping
+      label: 'Cron settings'
+      mapping:
+        status:
+          type: boolean
+          label: 'Cron status'
+        store_limit:
+          type: int
+          label: 'Limits the number of stores to be processed'
+        product_limit:
+          type: int
+          label: 'Limits the number of products per store to be exported'
+
 commerce_amws_product.commerce_amws_product_type.*:
   type: config_entity
   label: 'Amazon MWS product type'

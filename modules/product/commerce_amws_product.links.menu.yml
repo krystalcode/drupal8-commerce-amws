@@ -1,8 +1,22 @@
+commerce_amws_product.configuration:
+  title: 'Products'
+  description: 'Configure product synchronization with Amazon MWS.'
+  parent: commerce_amws.configuration
+  route_name: commerce_amws_product.configuration
+
+commerce_amws_product.settings_form:
+  title: 'Settings'
+  description: 'Manage integration settings related to products.'
+  parent: commerce_amws_product.configuration
+  route_name: commerce_amws_product.settings_form
+  weight: 0
+
 entity.commerce_amws_product_type.collection:
   title: 'Product types'
   description: 'Manage integration settings per product type.'
   route_name: entity.commerce_amws_product_type.collection
-  parent: commerce_amws.configuration
+  parent: commerce_amws_product.configuration
+  weight: 1
 
 entity.commerce_amws_product.collection:
   title: 'Products'
