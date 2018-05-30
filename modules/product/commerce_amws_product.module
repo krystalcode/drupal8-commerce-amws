@@ -5,6 +5,7 @@
  * Provides functionality for the Commerce Amazon MWS Product module.
  */
 
+use Drupal\commerce_amws_product\Adapters\Mcs\ProductStorage as AmwsProductRemoteStorage;
 use Drupal\commerce_product\Entity\ProductTypeInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -14,6 +15,11 @@ use Drupal\Core\Form\FormStateInterface;
  */
 
 /**
+ * The name of the logger channel to use throughout this module.
+ */
+const COMMERCE_AMWS_PRODUCT_LOGGER_CHANNEL = 'commerce_amws_product';
+
+/**
  * The prefix for form elements representing field mapping items.
  */
 const COMMERCE_AMWS_PRODUCT_FIELD_MAPPING_FORM_ELEMENT_PREFIX = 'commerce_amws_product_field_mapping_';
@@ -21,6 +27,59 @@ const COMMERCE_AMWS_PRODUCT_FIELD_MAPPING_FORM_ELEMENT_PREFIX = 'commerce_amws_p
 /**
  * Hooks.
  */
+
+/**
+ * Implements hook_cron().
+ *
+ * Submits queued Amazon MWS products for synchronization.
+ */
+function commerce_amws_product_cron() {
+  $config = \Drupal::service('config.factory')->get('commerce_amws_product.settings');
+  if (!$config->get('cron.status')) {
+    return;
+  }
+
+  $amws_store_storage = \Drupal::service('entity_type.manager')->getStorage('commerce_amws_store');
+  $amws_product_storage = \Drupal::service('entity_type.manager')->getStorage('commerce_amws_product');
+  $logger = \Drupal::service('logger.factory')->get(COMMERCE_AMWS_PRODUCT_LOGGER_CHANNEL);
+
+  // Load enabled stores, limited in number by the related configuration
+  // setting.
+  $store_limit = $config->get('cron.store_limit');
+  $query = $amws_store_storage
+    ->getQuery()
+    ->condition('status', AmwsStoreInterface::STATUS_PUBLISHED);
+
+  if ($store_limit) {
+    $query->range(0, $store_limit);
+  }
+
+  $amws_store_ids = $query->execute();
+
+  if (!$amws_store_ids) {
+    return;
+  }
+
+  // Load and export Amazon MWS products per store, limited in number by the
+  // related configuration setting.
+  $product_limit = $config->get('cron.product_limit');
+  $amws_stores = $amws_store_storage->loadMultiple($amws_store_ids);
+  foreach ($amws_stores as $amws_store) {
+    $load_options = ['store_id' => $amws_store->id()];
+    if ($product_limit) {
+      $load_options['limit'] = $product_limit;
+    }
+    $amws_products = $amws_product_storage->loadQueued($load_options);
+
+    if (!$amws_products) {
+      continue;
+    }
+
+    $amws_product_remote_storage = new AmwsProductRemoteStorage();
+    $amws_product_remote_storage->export($amws_products);
+    unset($amws_product_remote_storage);
+  }
+}
 
 /**
  * Implements hook_form_FORM_ID_alter().
