@@ -2,13 +2,49 @@
 
 namespace Drupal\commerce_amws_product;
 
-use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\commerce_amws_product\Entity\ProductTypeInterface as AmwsProductTypeInterface;
+use Drupal\commerce\ConfigurableFieldManagerInterface;
+use Drupal\entity\BundleFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 
 /**
  * Defines the Drupal fields available for mapping with Amazon MWS API fields.
  */
 class FieldMapping {
+
+  /**
+   * The configurable field manager service.
+   *
+   * @var \Drupal\commerce\ConfigurableFieldManagerInterface
+   */
+  protected $configurableFieldManager;
+
+  /**
+   * Constructs a new FieldMapping object.
+   *
+   * @param \Drupal\commerce\ConfigurableFieldManagerInterface $configurable_field_manager
+   *   The configurable field manager service.
+   */
+  public function __construct(ConfigurableFieldManagerInterface $configurable_field_manager) {
+    $this->configurableFieldManager = $configurable_field_manager;
+  }
+
+  /**
+   * Adds the bundle fields defined by the mapping to the given product type.
+   *
+   * @param \Drupal\commerce_amws_product\Entity\ProductTypeInterface $amws_product_type
+   *   The Amazon MWS product type to add the fields to.
+   */
+  public function addFieldsToProductType(AmwsProductTypeInterface $amws_product_type) {
+    $field_definitions = $this->bundleFieldDefinitions();
+    foreach ($field_definitions as $field_name => $field_definition) {
+      $field_definition->setName($field_name);
+      $field_definition->setTargetEntityTypeId('commerce_amws_product');
+      $field_definition->setTargetBundle($amws_product_type->id());
+
+      $this->configurableFieldManager->createField($field_definition);
+    }
+  }
 
   /**
    * Returns the definitions for all fields available for mapping.
@@ -80,7 +116,7 @@ class FieldMapping {
       'description' => $description,
       'multiple' => $multiple,
     ];
-    return $this->baseBundleFieldDefinition(
+    return $this->bundleFieldDefinition(
       'string',
       'string_textfield',
       'string',
@@ -111,7 +147,7 @@ class FieldMapping {
       'description' => $description,
       'multiple' => $multiple,
     ];
-    return $this->baseBundleFieldDefinition(
+    return $this->bundleFieldDefinition(
       'text_long',
       'text_textarea',
       'text_default',
@@ -143,7 +179,7 @@ class FieldMapping {
       'multiple' => $multiple,
       'field_formatter_settings' => ['format' => 'yes-no'],
     ];
-    return $this->baseBundleFieldDefinition(
+    return $this->bundleFieldDefinition(
       'boolean',
       'boolean_checkbox',
       'boolean',
@@ -179,7 +215,7 @@ class FieldMapping {
       'multiple' => $multiple,
       'field_type_settings' => ['allowed_values' => $allowed_values],
     ];
-    return $this->baseBundleFieldDefinition(
+    return $this->bundleFieldDefinition(
       'list_string',
       'options_select',
       'list_default',
@@ -210,7 +246,7 @@ class FieldMapping {
       'description' => $description,
       'multiple' => $multiple,
     ];
-    return $this->baseBundleFieldDefinition(
+    return $this->bundleFieldDefinition(
       'timestamp',
       'datetime_timestamp',
       'timestamp',
@@ -241,7 +277,7 @@ class FieldMapping {
       'description' => $description,
       'multiple' => $multiple,
     ];
-    return $this->baseBundleFieldDefinition(
+    return $this->bundleFieldDefinition(
       'decimal',
       'number',
       'number_decimal',
@@ -272,7 +308,7 @@ class FieldMapping {
    * @return \Drupal\Core\Field\FieldDefinitionInterface
    *   The created field definition.
    */
-  protected function baseBundleFieldDefinition(
+  protected function bundleFieldDefinition(
     $field_type,
     $field_widget,
     $field_formatter,
@@ -291,7 +327,7 @@ class FieldMapping {
     );
 
     // Create field definition.
-    $field_definition = BaseFieldDefinition::create($field_type)
+    $field_definition = BundleFieldDefinition::create($field_type)
       ->setLabel(t($label))
       ->setDescription(t($options['description']))
       ->setRevisionable(TRUE)

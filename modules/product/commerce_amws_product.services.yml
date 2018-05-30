@@ -1,6 +1,7 @@
 services:
   commerce_amws_product.field_mapping:
     class: \Drupal\commerce_amws_product\FieldMapping
+    arguments: ['@commerce.configurable_field_manager']
 
   commerce_amws_product.dev_commands:
     class: \Drupal\commerce_amws_product\Commands\DevCommands
