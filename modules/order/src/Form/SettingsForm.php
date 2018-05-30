@@ -9,46 +9,12 @@ use Drupal\Core\Form\ConfigFormBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Amazon MWS shipping settings form.
+ * Amazon MWS order settings form.
  */
 class SettingsForm extends ConfigFormBase {
 
   const BILLING_PROFILE_SOURCE_SHIPPING_INFORMATION = 'shipping_information';
   const BILLING_PROFILE_SOURCE_CUSTOM = 'custom';
-
-  /**
-   * The shipping method storage.
-   *
-   * @var \Drupal\commerce_shipping\ShippingMethodStorageInterface
-   */
-  protected $shippingMethodStorage;
-
-  /**
-   * Constructs a new SettingsForm object.
-   *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The factory for configuration objects.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity_type_manager.
-   */
-  public function __construct(
-    ConfigFactoryInterface $config_factory,
-    EntityTypeManagerInterface $entity_type_manager
-  ) {
-    parent::__construct($config_factory);
-
-    $this->shippingMethodStorage = $entity_type_manager->getStorage('commerce_shipping_method');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('config.factory'),
-      $container->get('entity_type.manager')
-    );
-  }
 
   /**
    * {@inheritdoc}
@@ -110,7 +76,6 @@ class SettingsForm extends ConfigFormBase {
     $form['cron'] = [
       '#type' => 'details',
       '#title' => $this->t('Cron'),
-      '#default' => $config->get('cron.status'),
     ];
     $form['cron']['cron_status'] = [
       '#type' => 'checkbox',
