@@ -11,6 +11,7 @@ use Drupal\commerce_product\Entity\ProductTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Constants.
@@ -381,6 +382,120 @@ function _commerce_amws_form_commerce_product_type_edit_form_alter__field_mappin
   else {
     $form['commerce_amws_product']['field_mapping'][$element_name] = $element;
   }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Adds Amazon MWS product details to commerce product edit form.
+ */
+function commerce_amws_form_alter(
+  &$form,
+  FormStateInterface $form_state,
+  $form_id
+) {
+  $is_product_form = strpos($form_id, 'commerce_product_') === 0;
+  $is_edit_form = strpos($form_id, '_edit_form');
+  if (!$is_product_form || !$is_edit_form) {
+    return;
+  }
+
+  // Exclude product (variation) type edit forms.
+  $type_forms = [
+    'commerce_product_type_edit_form',
+    'commerce_product_variation_type_edit_form',
+  ];
+  if (in_array($form_id, $type_forms)) {
+    return;
+  }
+
+  $product = $form_state->getFormObject()->getEntity();
+
+  // We have filtered forms by their IDs, but it's not completely reliable as
+  // there might be other forms apart from product type and product variation
+  // type edit forms that follow the pattern. Let's at least make sure that we
+  // have a Commerce product entity.
+  if ($product->getEntityTypeId() !== 'commerce_product') {
+    return;
+  }
+
+  $form['commerce_amws_product'] = [
+    '#type' => 'details',
+    '#title' => t('Amazon MWS integration'),
+    '#open' => FALSE,
+    '#group' => 'advanced',
+    '#attributes' => [
+      'class' => ['product-amazon-mws-settings'],
+    ],
+    '#weight' => 120,
+  ];
+
+  $product_type_id = $product->bundle();
+  $product_type = \Drupal::entityTypeManager()
+    ->getStorage('commerce_product_type')
+    ->load($product_type_id);
+
+  // The type of the product needs to have integration enabled.
+  $amws_status = $product_type->getThirdPartySetting(
+    'commerce_amws_product',
+    'status'
+  );
+  if (!$amws_status) {
+    $form['commerce_amws_product']['status'] = [
+      '#markup' => '<p>' . t('Products of this type are not configured to be synchronized with Amazon MWS.') . '</p>',
+    ];
+    return;
+  }
+
+  // Customize the message depending on whether there is already an AMWS product
+  // for the product at hand.
+  $amws_product_id = \Drupal::entityTypeManager()
+    ->getStorage('commerce_amws_product')
+    ->getQuery()
+    ->condition('product_id', $product->id())
+    ->range(0, 1)
+    ->execute();
+  if ($amws_product_id) {
+    $amws_product_id = current($amws_product_id);
+  }
+
+  if ($amws_product_id) {
+    $form['commerce_amws_product']['status'] = [
+      '#markup' => '<p>' . t('This product is set to be synchronized with Amazon MWS.') . '</p>',
+    ];
+  }
+  else {
+    $form['commerce_amws_product']['status'] = [
+      '#markup' => '<p>' . t('This product is not currently set to be synchronized with Amazon MWS.') . '</p>',
+    ];
+  }
+
+  // Add the link to add/edit the corresponding AMWS product form. For now, we
+  // provide UI for maintaining only one AMWS product per product.
+  if ($amws_product_id) {
+    $url = Url::fromRoute(
+      'entity.commerce_amws_product.edit_form',
+      [
+        'commerce_amws_product' => $amws_product_id,
+      ]
+    );
+  }
+  else {
+    $amws_product_type_id = $product_type->getThirdPartySetting(
+      'commerce_amws_product',
+      'product_type_id'
+    );
+    $url = Url::fromRoute(
+      'entity.commerce_amws_product.add_form',
+      ['commerce_amws_product_type' => $amws_product_type_id],
+      ['query' => ['commerce-product' => $product->id()]]
+    );
+  }
+  $form['commerce_amws_product']['product_id'] = [
+    '#type' => 'link',
+    '#title' => t('Configure'),
+    '#url' => $url,
+  ];
 }
 
 /**
