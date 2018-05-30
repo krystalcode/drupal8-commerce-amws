@@ -130,7 +130,7 @@ class ProductForm extends ContentEntityForm {
       'published' => [
         '#type' => 'html_tag',
         '#tag' => 'h3',
-        '#value' => $amws_product->isPublished() ? $this->t('Published') : $this->t('Not published'),
+        '#value' => $amws_product->getState()->getLabel(),
         '#access' => !$amws_product->isNew(),
         '#attributes' => [
           'class' => ['entity-meta__title'],

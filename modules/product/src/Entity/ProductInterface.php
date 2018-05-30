@@ -88,4 +88,12 @@ interface ProductInterface extends ContentEntityInterface, EntityChangedInterfac
    */
   public function setStoreIds(array $store_ids);
 
+  /**
+   * Gets the product state.
+   *
+   * @return \Drupal\state_machine\Plugin\Field\FieldType\StateItemInterface
+   *   The product state.
+   */
+  public function getState();
+
 }
