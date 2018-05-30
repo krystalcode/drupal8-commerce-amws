@@ -30,6 +30,31 @@ class SettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('commerce_amws_product.settings');
 
+    // Workflow settings.
+    $form['workflow'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Workflow'),
+      '#open' => TRUE,
+    ];
+    $form['workflow']['workflow_change_on_publish'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Mark products as changed when they are published'),
+      '#description' => $this->t('When checked, Amazon MWS products will be automatically marked as changed so that they can be moved to the next step in the synchronization workflow. They will be additionally queued for submission if changed products are automatically scheduled for submission depending on the related setting below.'),
+      '#default_value' => $config->get('workflow.change_on_publish'),
+    ];
+    $form['workflow']['workflow_change_on_commerce_product_change'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Mark products as changed when associated Commerce products change'),
+      '#description' => $this->t('When checked, Amazon MWS products will be automatically marked as changed when their associated Commerce products (if any) are changed.'),
+      '#default_value' => $config->get('workflow.change_on_commerce_product_change'),
+    ];
+    $form['workflow']['workflow_queue_on_change'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Queue for submission products marked as changed'),
+      '#description' => $this->t('When checked, Amazon MWS products that are marked as changed will be automatically queued for submission to Amazon MWS.'),
+      '#default_value' => $config->get('workflow.queue_on_change'),
+    ];
+
     // Cron settings.
     $form['cron'] = [
       '#type' => 'details',
@@ -87,6 +112,21 @@ class SettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('commerce_amws_product.settings');
+
+    // Workflow settings.
+    $config
+      ->set(
+        'workflow.change_on_publish',
+        $form_state->getValue('workflow_change_on_publish')
+      )
+      ->set(
+        'workflow.change_on_commerce_product_change',
+        $form_state->getValue('workflow_change_on_commerce_product_change')
+      )
+      ->set(
+        'workflow.queue_on_change',
+        $form_state->getValue('workflow_queue_on_change')
+      );
 
     // Cron settings.
     $cron_status = $form_state->getValue('cron_status');

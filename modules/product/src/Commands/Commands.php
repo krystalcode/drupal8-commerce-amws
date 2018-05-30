@@ -62,23 +62,19 @@ class Commands extends DrushCommands {
       return;
     }
 
-    // Get published products per store and submit them for synchronization.
+    // Get queued products per store and submit them for synchronization.
     $amws_stores = $this->amwsStoreStorage->loadMultiple($amws_store_ids);
     foreach ($amws_stores as $amws_store) {
       $load_options = ['store_id' => $amws_store->id()];
       if ($options['product-limit']) {
         $load_options['limit'] = $options['product-limit'];
       }
-      $amws_product_ids = $this->amwsProductStorage
-        ->getQuery()
-        ->condition('status', TRUE)
-        ->execute();
+      $amws_products = $this->amwsProductStorage->loadQueued($load_options);
 
-      if (!$amws_product_ids) {
+      if (!$amws_products) {
         continue;
       }
 
-      $amws_products = $this->amwsStoreStorage->loadMultiple($amws_product_ids);
       $amws_product_remote_storage = new AmwsProductRemoteStorage();
       $amws_product_remote_storage->export($amws_products);
       unset($amws_product_remote_storage);

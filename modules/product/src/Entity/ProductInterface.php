@@ -5,12 +5,16 @@ namespace Drupal\commerce_amws_product\Entity;
 use Drupal\user\EntityOwnerInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedInterface;
-use Drupal\Core\Entity\EntityPublishedInterface;
 
 /**
  * Defines the interface for Amazon MWS product entities.
  */
-interface ProductInterface extends ContentEntityInterface, EntityChangedInterface, EntityOwnerInterface, EntityPublishedInterface {
+interface ProductInterface extends ContentEntityInterface, EntityChangedInterface, EntityOwnerInterface {
+
+  /**
+   * The default synchronization workflow for Amazon MWS product entities.
+   */
+  const WORKFLOW_DEFAULT = 'amws_product_default';
 
   /**
    * Gets the product title.

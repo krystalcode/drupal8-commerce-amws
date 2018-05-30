@@ -7,6 +7,7 @@
 
 use Drupal\commerce_amws_product\Adapters\Mcs\ProductStorage as AmwsProductRemoteStorage;
 use Drupal\commerce_product\Entity\ProductTypeInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -78,6 +79,49 @@ function commerce_amws_product_cron() {
     $amws_product_remote_storage = new AmwsProductRemoteStorage();
     $amws_product_remote_storage->export($amws_products);
     unset($amws_product_remote_storage);
+  }
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function commerce_amws_product_entity_update(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() !== 'commerce_product') {
+    return;
+  }
+
+  $change = \Drupal::service('config.factory')
+    ->get('commerce_amws_product.settings')
+    ->get('workflow.change_on_commerce_product_change');
+  if (!$change) {
+    return;
+  }
+
+  $amws_product_storage = \Drupal::service('entity_type.manager')
+    ->getStorage('commerce_amws_product');
+  $amws_product_ids = $amws_product_storage
+    ->getQuery()
+    ->condition('product_id', $entity->id())
+    ->execute();
+
+  if (!$amws_product_ids) {
+    return;
+  }
+
+  $transition_id = 'change';
+  $amws_products = $amws_product_storage->loadMultiple($amws_product_ids);
+  foreach ($amws_products as $amws_product) {
+    $state = $amws_product->getState();
+    $workflow = $state->getWorkflow();
+    $transition = $workflow->getTransition($transition_id);
+    $transitions = $workflow->getAllowedTransitions($state, $amws_product);
+
+    if (!in_array($transition_id, array_keys($transitions))) {
+      continue;
+    }
+
+    $state->applyTransition($transition);
+    $amws_product->save();
   }
 }
 

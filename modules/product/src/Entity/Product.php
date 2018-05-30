@@ -5,7 +5,6 @@ namespace Drupal\commerce_amws_product\Entity;
 use Drupal\user\UserInterface;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
-use Drupal\Core\Entity\EntityPublishedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 
@@ -24,6 +23,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   ),
  *   bundle_label = @Translation("Product type"),
  *   handlers = {
+ *     "storage" = "Drupal\commerce_amws_product\ProductStorage",
  *     "list_builder" = "Drupal\commerce_amws_product\ProductListBuilder",
  *     "form" = {
  *       "add" = "Drupal\commerce_amws_product\Form\ProductForm",
@@ -45,7 +45,6 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *     "label" = "title",
  *     "langcode" = "langcode",
  *     "uuid" = "uuid",
- *     "published" = "status",
  *   },
  *   links = {
  *     "canonical" = "/admin/commerce/amazon-mws/product/{commerce_amws_product}",
@@ -60,7 +59,6 @@ use Drupal\Core\Field\BaseFieldDefinition;
 class Product extends ContentEntityBase implements ProductInterface {
 
   use EntityChangedTrait;
-  use EntityPublishedTrait;
 
   /**
    * {@inheritdoc}
@@ -161,9 +159,8 @@ class Product extends ContentEntityBase implements ProductInterface {
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
-    $fields += static::publishedBaseFieldDefinitions($entity_type);
 
-    // Publication status and authoring fields.
+    // Authoring fields.
     $fields['uid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Author'))
       ->setDescription(t('The product author.'))
@@ -194,24 +191,38 @@ class Product extends ContentEntityBase implements ProductInterface {
       ->setDescription(t('The time when the product was last edited.'))
       ->setTranslatable(TRUE);
 
-    $fields['status']
-      ->setLabel(t('Published'))
-      ->setDisplayOptions('form', [
-        'type' => 'boolean_checkbox',
-        'settings' => [
-          'display_label' => TRUE,
-        ],
-        'weight' => 90,
+    // Synchronization fields.
+    $fields['synced'] = BaseFieldDefinition::create('timestamp')
+      ->setLabel(t('Synchronized'))
+      ->setDescription(t('The time when the product was last synchronized with Amazon MWS.'))
+      ->setTranslatable(TRUE);
+
+    $fields['state'] = BaseFieldDefinition::create('state')
+      ->setLabel(t('Synchronization state'))
+      ->setDescription(t("The state of the product\'s current synchronization process."))
+      ->setRequired(TRUE)
+      ->setTranslatable(TRUE)
+      ->setSetting('workflow', ProductInterface::WORKFLOW_DEFAULT)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'state_transition_form',
+        'weight' => 10,
       ])
-      ->setDisplayConfigurable('form', TRUE);
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
 
     // The product that this Amazon MWS product is tied to.
     $fields['product_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Product'))
       ->setDescription(t('The corresponding product.'))
       ->setSetting('target_type', 'commerce_product')
-      ->setReadOnly(TRUE)
-      ->setDisplayConfigurable('view', TRUE);
+      ->setSetting('handler', 'default')
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('view', TRUE)
+      ->setDisplayConfigurable('form', TRUE);
 
     // Title.
     $fields['title'] = BaseFieldDefinition::create('string')

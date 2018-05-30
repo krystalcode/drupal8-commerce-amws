@@ -2,6 +2,19 @@ commerce_amws_product.settings:
   type: config_object
   label: 'Amazon MWS product settings'
   mapping:
+    workflow:
+      type: mapping
+      label: 'Workflow settings'
+      mapping:
+        change_on_publish:
+          type: boolean
+          label: 'Mark as changed when published'
+        change_on_commerce_product_change:
+          type: boolean
+          label: 'Mark as changed on associated commerce product change'
+        queue_on_change:
+          type: boolean
+          label: 'Queue on change'
     cron:
       type: mapping
       label: 'Cron settings'

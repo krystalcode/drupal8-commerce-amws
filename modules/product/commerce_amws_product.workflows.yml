@@ -1,0 +1,42 @@
+amws_product_default:
+  id: amws_product_default
+  group: commerce_amws_product
+  label: 'Default'
+  states:
+    unpublished:
+      label: Unpublished
+    published:
+      label: Published
+    changed:
+      label: Changed
+    queued:
+      label: 'Queued for submission'
+    submitted:
+      label: 'Submitted for synchronization'
+    synced:
+      label: Synchronized
+  transitions:
+    publish:
+      label: Publish
+      from: [unpublished]
+      to: published
+    unpublish:
+      label: Unpublish
+      from: [published, changed, queued, submitted, synced]
+      to: unpublished
+    change:
+      label: 'Mark as changed'
+      from: [published, queued, submitted, synced]
+      to: changed
+    queue:
+      label: 'Queue for submission'
+      from: [published, changed]
+      to: queued
+    submit:
+      label: 'Submit for synchronization'
+      from: [queued]
+      to: submitted
+    sync:
+      label: 'Mark as synchronized'
+      from: [submitted]
+      to: synced

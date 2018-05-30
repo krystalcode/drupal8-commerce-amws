@@ -1,0 +1,3 @@
+commerce_amws_product:
+  label: 'Amazon MWS product'
+  entity_type: commerce_amws_product
