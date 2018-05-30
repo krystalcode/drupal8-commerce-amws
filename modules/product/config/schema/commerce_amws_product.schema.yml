@@ -49,7 +49,7 @@ commerce_amws_product.commerce_amws_product_type.*:
       type: mapping
       label: 'Field mapping'
       mapping:
-        commerce_oamws_product_field:
+        commerce_amws_product_field:
           type: string
           label: 'Amazon MWS field name'
         commerce_product_field:
