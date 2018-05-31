@@ -80,7 +80,7 @@ class ProductTypeForm extends EntityForm {
     $status = $this->entity->save();
 
     if ($status === SAVED_NEW) {
-      commerce_amws_product_add_stores_field($this->entity);
+      _commerce_amws_product_add_stores_field($this->entity);
       $this->fieldMapping->addFieldsToProductType($this->entity);
     }
 
