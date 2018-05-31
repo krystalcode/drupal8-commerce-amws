@@ -17,7 +17,7 @@ class ProductListBuilder extends EntityListBuilder {
   public function buildHeader() {
     $header['title'] = t('Title');
     $header['type'] = t('Type');
-    $header['status'] = t('Status');
+    $header['state'] = t('State');
     return $header + parent::buildHeader();
   }
 
@@ -37,7 +37,7 @@ class ProductListBuilder extends EntityListBuilder {
       '#title' => $product->label(),
     ] + $product->toUrl()->toRenderArray();
     $row['type'] = $product_type->label();
-    $row['status'] = $product->isPublished() ? $this->t('Published') : $this->t('Unpublished');
+    $row['state'] = $product->getState()->getLabel();
 
     return $row + parent::buildRow($product);
   }
