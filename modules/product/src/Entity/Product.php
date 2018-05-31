@@ -28,6 +28,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *     "form" = {
  *       "add" = "Drupal\commerce_amws_product\Form\ProductForm",
  *       "edit" = "Drupal\commerce_amws_product\Form\ProductForm",
+ *       "delete" = "Drupal\Core\Entity\EntityDeleteForm",
  *     },
  *     "route_provider" = {
  *       "default" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
@@ -50,6 +51,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *     "canonical" = "/admin/commerce/amazon-mws/product/{commerce_amws_product}",
  *     "add-form" = "/admin/commerce/amazon-mws/product/add/{commerce_amws_product_type}",
  *     "edit-form" = "/admin/commerce/amazon-mws/product/{commerce_amws_product}/edit",
+ *     "delete-form" = "/admin/commerce/amazon-mws/product/{commerce_amws_product}/delete",
  *     "collection" = "/admin/commerce/amazon-mws/products"
  *   },
  *   bundle_entity_type = "commerce_amws_product_type",
