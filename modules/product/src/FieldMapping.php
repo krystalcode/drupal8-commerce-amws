@@ -2,6 +2,7 @@
 
 namespace Drupal\commerce_amws_product;
 
+use Drupal\commerce_amws\Utilities;
 use Drupal\commerce_amws_product\Entity\ProductTypeInterface as AmwsProductTypeInterface;
 use Drupal\commerce\ConfigurableFieldManagerInterface;
 use Drupal\entity\BundleFieldDefinition;
@@ -315,7 +316,7 @@ class FieldMapping {
     $label,
     array $options = []
   ) {
-    $options = array_merge(
+    $options = Utilities::arrayMergeRecursive(
       [
         'description' => '',
         'multiple' => FALSE,

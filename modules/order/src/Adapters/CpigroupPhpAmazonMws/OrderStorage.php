@@ -3,6 +3,7 @@
 namespace Drupal\commerce_amws_order\Adapters\CpigroupPhpAmazonMws;
 
 use Drupal\commerce_amws\Entity\StoreInterface as AmwsStoreInterface;
+use Drupal\commerce_amws\Utilities;
 use Drupal\commerce_amws_order\Adapters\OrderStorageInterface as AmwsOrderStorageInterface;
 use Drupal\commerce_amws_order\OrderService as AmwsOrderService;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -78,7 +79,7 @@ class OrderStorage implements AmwsOrderStorageInterface {
    *   When an error occurs while fetching the orders from Amazon MWS.
    */
   public function loadMultiple(array $options) {
-    $options = array_merge(
+    $options = Utilities::arrayMergeRecursive(
       $this->defaultOptions(),
       $options
     );
@@ -125,10 +126,6 @@ class OrderStorage implements AmwsOrderStorageInterface {
    * {@inheritdoc}
    */
   public function import(array $options = []) {
-    $options = array_merge(
-      $this->defaultOptions(),
-      $options
-    );
     $amws_orders = $this->loadMultiple($options);
 
     foreach ($amws_orders as $amws_order) {
