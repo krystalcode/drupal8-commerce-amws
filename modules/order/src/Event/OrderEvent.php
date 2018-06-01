@@ -54,7 +54,7 @@ class OrderEvent extends Event {
    * Gets the order.
    *
    * @return \Drupal\commerce_order\Entity\OrderInterface
-   *   Gets the order.
+   *   The order.
    */
   public function getOrder() {
     return $this->order;
@@ -64,7 +64,7 @@ class OrderEvent extends Event {
    * Gets the Amazon MWS order.
    *
    * @return \AmazonOrder
-   *   Gets the Amazon MWS order.
+   *   The Amazon MWS order.
    */
   public function getAmwsOrder() {
     return $this->amwsOrder;

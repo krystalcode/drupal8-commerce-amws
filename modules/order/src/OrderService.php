@@ -5,6 +5,8 @@ namespace Drupal\commerce_amws_order;
 use Drupal\commerce_amws\HelperService;
 use Drupal\commerce_amws_order\Event\OrderEvent as AmwsOrderEvent;
 use Drupal\commerce_amws_order\Event\OrderEvents as AmwsOrderEvents;
+use Drupal\commerce_amws_order\Event\OrderItemEvent as AmwsOrderItemEvent;
+use Drupal\commerce_amws_order\Event\OrderItemEvents as AmwsOrderItemEvents;
 use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -255,8 +257,20 @@ class OrderService {
     // Set the unit price; that will trigger calculating the order item's total
     // price as well.
     $total_price = $this->helper->amwsPriceToDrupalPrice($data['ItemPrice']);
+    // Subtract any promotion discount as well.
+    // We might develop a feature of connecting Drupal promotions with Amazon
+    // MWS promotions, but that needs a bit more thinking. For now, don't create
+    // an adjustment.
+    if (!empty($data['PromotionDiscount']) && $data['PromotionDiscount']['Amount'] != 0) {
+      $discount = $this->helper->amwsPriceToDrupalPrice($data['PromotionDiscount']);
+      $total_price = $total_price->subtract($discount);
+    }
     $unit_price = $total_price->divide($data['QuantityOrdered']);
     $order_item->setUnitPrice($unit_price);
+
+    // Allow subscribers to modify the order item before being saved.
+    $event = new AmwsOrderItemEvent($order_item, $data);
+    $this->eventDispatcher->dispatch(AmwsOrderItemEvents::ORDER_ITEM_CREATE, $event);
 
     // Save the order item.
     $order_item->save();
