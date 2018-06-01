@@ -65,8 +65,13 @@ class HelperService {
     $profile_type = 'customer',
     $save = TRUE
   ) {
-    $address = $this->parseAmwsAddress($amws_order->getShippingAddress());
-    $address += $this->parseAmwsName($amws_order->getBuyerName());
+    $amws_address = $amws_order->getShippingAddress();
+    // Address.
+    $address = $this->parseAmwsAddress($amws_address);
+    // Name.
+    if (!empty($amws_address['Name'])) {
+      $address += $this->parseAmwsName($amws_address['Name']);
+    }
 
     $profile = $this->profileStorage->create([
       'type' => $profile_type,
