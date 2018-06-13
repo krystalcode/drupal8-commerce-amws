@@ -5,6 +5,9 @@
  * Provides functionality for the Commerce Amazon MWS Feed module.
  */
 
+use Drupal\commerce_amws\Entity\StoreInterface as AmwsStoreInterface;
+use Drupal\commerce_amws_feed\Adapters\CpigroupPhpAmazonMws\FeedStorage as RemoteFeedStorage;
+
 /**
  * Constants.
  */
@@ -13,3 +16,44 @@
  * The name of the logger channel to use throughout this module.
  */
 const COMMERCE_AMWS_FEED_LOGGER_CHANNEL = 'commerce_amws_feed';
+
+/**
+ * Hooks.
+ */
+
+/**
+ * Implements hook_cron().
+ */
+function commerce_amws_feed_cron() {
+  $amws_store_storage = \Drupal::service('entity_type.manager')->getStorage('commerce_amws_store');
+  $feed_storage = \Drupal::service('entity_type.manager')->getStorage('commerce_amws_feed');
+  $logger = \Drupal::service('logger.factory')->get(COMMERCE_AMWS_FEED_LOGGER_CHANNEL);
+
+  // Load enabled stores.
+  $amws_store_ids = $amws_store_storage
+    ->getQuery()
+    ->condition('status', AmwsStoreInterface::STATUS_PUBLISHED)
+    ->execute();
+
+  if (!$amws_store_ids) {
+    return;
+  }
+
+  // Get submitted feeds per store and update them.
+  $amws_stores = $amws_store_storage->loadMultiple($amws_store_ids);
+  foreach ($amws_stores as $amws_store) {
+    $load_options = ['store_id' => $amws_store->id()];
+    $feeds = $feed_storage->loadSubmitted($load_options);
+
+    if (!$feeds) {
+      continue;
+    }
+
+    $remote_feed_storage = new RemoteFeedStorage(
+      $amws_store,
+      $logger
+    );
+    $remote_feed_storage->update($feeds);
+    unset($remote_feed_storage);
+  }
+}
