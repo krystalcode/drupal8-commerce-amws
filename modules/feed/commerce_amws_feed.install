@@ -40,7 +40,7 @@ function _commerce_amws_feed_supported_types() {
     [
       'id' => '_POST_PRODUCT_DATA_',
       'label' => 'Product',
-      'description' => 'The product feed contains descriptive information about the products in your catalog. This information allows Amazon to build a record and assign to each product a unique identifier known as an ASIN (Amazon Standard Item Number). The feed is the first step in submitting your products to Amazon. It establishes the mapping between your SKU and our ASIN. All subsequent catalog feeds depend upon the success of this feed. For more information see https://sellercentral.amazon.com/gp/help/200386810.'
+      'description' => 'The product feed contains descriptive information about the products in your catalog. This information allows Amazon to build a record and assign to each product a unique identifier known as an ASIN (Amazon Standard Item Number). The feed is the first step in submitting your products to Amazon. It establishes the mapping between your SKU and our ASIN. All subsequent catalog feeds depend upon the success of this feed. For more information see https://sellercentral.amazon.com/gp/help/200386810.',
     ],
     [
       'id' => '_POST_PRODUCT_RELATIONSHIP_DATA_',

@@ -11,9 +11,10 @@ namespace Drupal\commerce_amws_feed\Adapters;
 interface FeedStorageInterface {
 
   /**
-   * Updates the given feeds.
+   * Updates the given feeds with the processing results fetched from Amazon.
    *
-   * @param \Drupal\commerce_amws_feed\Entity\FeedInterface[]
+   * @param \Drupal\commerce_amws_feed\Entity\FeedInterface[] $feeds
+   *   The feeds for which to fetch the results.
    */
   public function update(array $feeds);
 

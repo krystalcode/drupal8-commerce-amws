@@ -6,8 +6,6 @@ use Drupal\commerce_amws\Adapters\CpigroupPhpAmazonMws\AdapterTrait;
 use Drupal\commerce_amws\Entity\StoreInterface as AmwsStoreInterface;
 use Drupal\commerce_amws_feed\Adapters\FeedStorageInterface as FeedRemoteStorageInterface;
 use Drupal\commerce_amws_feed\Entity\FeedInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use LSS\Array2XML;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -25,13 +23,6 @@ class FeedStorage implements FeedRemoteStorageInterface {
   protected $amwsFeedList;
 
   /**
-   * The feed storage.
-   *
-   * @var \Drupal\commerce_amws_feed\FeedStorageInterface
-   */
-  protected $feedStorage;
-
-  /**
    * The logger service.
    *
    * @var \Psr\Log\LoggerInterface
@@ -43,8 +34,6 @@ class FeedStorage implements FeedRemoteStorageInterface {
    *
    * @param \Drupal\commerce_amws\Entity\StoreInterface $amws_store
    *   The Amazon MWS store that the feeds belong to.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager.
    * @param \Psr\Log\LoggerInterface $logger
    *   The logger service.
    */
@@ -61,7 +50,6 @@ class FeedStorage implements FeedRemoteStorageInterface {
       $this->prepareStoreConfig($amws_store)
     );
 
-    //$this->feedStorage = $entity_type_manager->getStorage('commerce_amws_feed');
     $this->logger = $logger;
   }
 
@@ -69,7 +57,13 @@ class FeedStorage implements FeedRemoteStorageInterface {
    * {@inheritdoc}
    */
   public function update(array $feeds) {
-    $sorted_feeds = array_reduce(
+    if (!$feeds) {
+      return;
+    }
+
+    // The feeds might be keyed by their Drupal IDs. We want them keyed by
+    // their Amazon MWS submission IDs.
+    $keyed_feeds = array_reduce(
       $feeds,
       function ($carry, $feed) {
         $carry[$feed->getSubmissionId()] = $feed;
@@ -78,7 +72,7 @@ class FeedStorage implements FeedRemoteStorageInterface {
       []
     );
 
-    $this->amwsFeedList->setFeedIds(array_keys($sorted_feeds));
+    $this->amwsFeedList->setFeedIds(array_keys($keyed_feeds));
     $this->amwsFeedList->setUseToken();
     $this->amwsFeedList->fetchFeedSubmissions();
     $results = $this->amwsFeedList->getFeedList();
@@ -88,20 +82,20 @@ class FeedStorage implements FeedRemoteStorageInterface {
     }
 
     foreach ($results as $result) {
-      var_dump($result);
       $submission_id = $result['FeedSubmissionId'];
+      // @I Move dynamic status constant generation to a utility class.
       $constant = FeedInterface::class . '::PROCESSING_STATUS_' . trim($result['FeedProcessingStatus'], '_');
-      $sorted_feeds[$submission_id]->setProcessingStatus(constant($constant));
+      $keyed_feeds[$submission_id]->setProcessingStatus(constant($constant));
 
       if (!empty($result['StartedProcessingDate'])) {
-        $sorted_feeds[$submission_id]->setStartedProcessingDate(strtotime($result['StartedProcessingDate']));
+        $keyed_feeds[$submission_id]->setStartedProcessingDate(strtotime($result['StartedProcessingDate']));
       }
 
       if (!empty($result['CompletedProcessingDate'])) {
-        $sorted_feeds[$submission_id]->setCompletedProcessingDate(strtotime($result['CompletedProcessingDate']));
+        $keyed_feeds[$submission_id]->setCompletedProcessingDate(strtotime($result['CompletedProcessingDate']));
       }
 
-      $sorted_feeds[$submission_id]->save();
+      $keyed_feeds[$submission_id]->save();
     }
   }
 
