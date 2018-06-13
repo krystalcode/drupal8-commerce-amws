@@ -1,0 +1,7 @@
+'administer commerce_amws_feed_type':
+  title: 'Administer Amazon MWS feed types'
+  'restrict access': TRUE
+
+'administer commerce_amws_feed':
+  title: 'Administer Amazon MWS feed submissions'
+  'restrict access': TRUE

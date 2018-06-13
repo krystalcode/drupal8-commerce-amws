@@ -1,0 +1,7 @@
+commerce_amws_feed.configuration:
+  path: '/admin/commerce/config/amazon-mws/feeds'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Feeds'
+  requirements:
+    _permission: 'administer commerce_amws_feed'

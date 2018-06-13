@@ -1,0 +1,17 @@
+commerce_amws_feed.configuration:
+  title: 'Feeds'
+  description: 'Configure integration with Amazon MWS feed submissions.'
+  parent: commerce_amws.configuration
+  route_name: commerce_amws_feed.configuration
+
+entity.commerce_amws_feed_type.collection:
+  title: 'Feed types'
+  description: 'View supported Amazon MWS feed types.'
+  route_name: entity.commerce_amws_feed_type.collection
+  parent: commerce_amws_feed.configuration
+
+entity.commerce_amws_feed.collection:
+  title: 'Feed submissions'
+  description: 'View your Amazon MWS feed submissions.'
+  route_name: entity.commerce_amws_feed.collection
+  parent: commerce_amws.admin

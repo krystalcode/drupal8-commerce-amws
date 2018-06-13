@@ -1,0 +1,6 @@
+services:
+  commerce_amws_feed.commands:
+    class: \Drupal\commerce_amws_feed\Commands\Commands
+    arguments: ['@entity_type.manager', '@logger.factory']
+    tags:
+      - { name: drush.command }

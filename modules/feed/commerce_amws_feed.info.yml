@@ -1,0 +1,7 @@
+name: Commerce Amazon MWS Feed Submissions
+type: module
+description: 'Provides integration features for syncing feed submissions from Amazon MWS'
+package: Commerce Amazon MWS (contrib)
+core: 8.x
+dependencies:
+  - commerce_amws:commerce_amws

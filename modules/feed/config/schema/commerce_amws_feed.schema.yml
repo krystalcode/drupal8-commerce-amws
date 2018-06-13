@@ -1,0 +1,13 @@
+commerce_amws_feed.commerce_amws_feed_type.*:
+  type: config_entity
+  label: 'Amazon MWS feed type'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: string
+      label: 'Label'
+    description:
+      type: description
+      label: 'Description'

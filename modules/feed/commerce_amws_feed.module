@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Provides functionality for the Commerce Amazon MWS Feed module.
+ */
+
+/**
+ * Constants.
+ */
+
+/**
+ * The name of the logger channel to use throughout this module.
+ */
+const COMMERCE_AMWS_FEED_LOGGER_CHANNEL = 'commerce_amws_feed';
