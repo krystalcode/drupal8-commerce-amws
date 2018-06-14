@@ -16,7 +16,7 @@ class ProductStorage extends SqlContentEntityStorage implements ProductStorageIn
     $query = $this->getQuery()->condition('state', 'queued');
 
     if (!empty($options['store_id'])) {
-      $query->condition('stores', $options['store_id']);
+      $query->condition('amws_stores', $options['store_id']);
     }
 
     if (!empty($options['limit'])) {

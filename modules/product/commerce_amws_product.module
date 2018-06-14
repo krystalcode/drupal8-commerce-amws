@@ -681,30 +681,3 @@ function _commerce_amws_product_field_mapping_type_synonyms($field_type) {
 
   return FALSE;
 }
-
-/**
- * Adds the default stores field to an Amazon MWS product.
- *
- * A product can belong to multiple stores (Amazon marketplaces).
- *
- * @param \Drupal\commerce_amws_product\Entity\ProductTypeInterface $product_type
- *   The product type.
- */
-function _commerce_amws_product_add_stores_field(AmwsProductTypeInterface $product_type) {
-  $field_definition = BundleFieldDefinition::create('entity_reference')
-    ->setTargetEntityTypeId('commerce_amws_product')
-    ->setTargetBundle($product_type->id())
-    ->setName('stores')
-    ->setLabel('Stores')
-    ->setCardinality(BundleFieldDefinition::CARDINALITY_UNLIMITED)
-    ->setRequired(TRUE)
-    ->setSetting('target_type', 'commerce_amws_store')
-    ->setSetting('handler', 'default')
-    ->setDisplayOptions('form', [
-      'type' => 'commerce_entity_select',
-      'weight' => -10,
-    ]);
-
-  $configurable_field_manager = \Drupal::service('commerce.configurable_field_manager');
-  $configurable_field_manager->createField($field_definition);
-}

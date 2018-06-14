@@ -126,14 +126,14 @@ class Product extends ContentEntityBase implements ProductInterface {
    * {@inheritdoc}
    */
   public function getStores() {
-    return $this->getTranslatedReferencedEntities('stores');
+    return $this->getTranslatedReferencedEntities('amws_stores');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setStores(array $stores) {
-    $this->set('stores', $stores);
+  public function setStores(array $amws_stores) {
+    $this->set('amws_stores', $amws_stores);
     return $this;
   }
 
@@ -141,18 +141,18 @@ class Product extends ContentEntityBase implements ProductInterface {
    * {@inheritdoc}
    */
   public function getStoreIds() {
-    $store_ids = [];
-    foreach ($this->get('stores') as $store_item) {
-      $store_ids[] = $store_item->target_id;
+    $amws_store_ids = [];
+    foreach ($this->get('amws_stores') as $amws_store_item) {
+      $amws_store_ids[] = $amws_store_item->target_id;
     }
-    return $store_ids;
+    return $amws_store_ids;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setStoreIds(array $store_ids) {
-    $this->set('stores', $store_ids);
+  public function setStoreIds(array $amws_store_ids) {
+    $this->set('amws_stores', $amws_store_ids);
     return $this;
   }
 
@@ -252,6 +252,27 @@ class Product extends ContentEntityBase implements ProductInterface {
         'type' => 'string_textfield',
         'weight' => -5,
       ])
+      ->setDisplayConfigurable('form', TRUE);
+
+    // The Amazon MWS stores that this product belongs to.
+    $fields['amws_stores'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Amazon MWS Stores'))
+      ->setDescription(t('The Amazon MWS stores that the product belongs to.'))
+      ->setRequired(TRUE)
+      ->setTranslatable(TRUE)
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+      ->setSetting('target_type', 'commerce_amws_store')
+      ->setSetting('handler', 'default')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'entity_reference_label',
+        'weight' => -5,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'commerce_entity_select',
+        'weight' => -10,
+      ])
+      ->setDisplayConfigurable('view', TRUE)
       ->setDisplayConfigurable('form', TRUE);
 
     return $fields;

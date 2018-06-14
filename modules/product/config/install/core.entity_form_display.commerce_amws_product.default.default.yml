@@ -3,7 +3,6 @@ status: true
 dependencies:
   config:
     - commerce_amws_product.commerce_amws_product_type.default
-    - field.field.commerce_amws_product.default.stores
   module:
     - commerce
 id: commerce_amws_product.default.default
@@ -30,7 +29,7 @@ content:
     settings:
       display_label: true
     third_party_settings: {  }
-  stores:
+  amws_stores:
     type: commerce_entity_select
     weight: -10
     settings:

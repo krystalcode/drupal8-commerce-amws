@@ -182,7 +182,7 @@ class ProductForm extends ContentEntityForm {
 
     $form['uid']['#group'] = 'author';
     $form['status']['#group'] = 'visibility_settings';
-    $form['stores']['#group'] = 'visibility_settings';
+    $form['amws_stores']['#group'] = 'visibility_settings';
     $form['created']['#group'] = 'author';
 
     return $form;
