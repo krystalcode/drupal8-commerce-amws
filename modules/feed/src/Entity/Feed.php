@@ -210,7 +210,6 @@ class Feed extends ContentEntityBase implements FeedInterface {
       ->setTranslatable(TRUE)
       ->setSetting('max_length', 255)
       ->setDisplayOptions('view', [
-        'label' => 'hidden',
         'type' => 'string',
         'weight' => 0,
       ])
@@ -220,17 +219,32 @@ class Feed extends ContentEntityBase implements FeedInterface {
       ->setLabel(t('Submitted'))
       ->setDescription(t('The time when the feed was submitted.'))
       ->setRequired(TRUE)
-      ->setTranslatable(TRUE);
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'timestamp',
+        'weight' => 2,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
 
     $fields['started_processing_date'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(t('Started processing'))
       ->setDescription(t('The time when the feed processing started.'))
-      ->setTranslatable(TRUE);
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'timestamp',
+        'weight' => 3,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
 
     $fields['completed_processing_date'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(t('Completed processing'))
       ->setDescription(t('The time when the feed processing completed.'))
-      ->setTranslatable(TRUE);
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'timestamp',
+        'weight' => 4,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
 
     $fields['processing_status'] = BaseFieldDefinition::create('list_integer')
       ->setLabel(t('Processing status'))
@@ -245,7 +259,12 @@ class Feed extends ContentEntityBase implements FeedInterface {
         FeedInterface::PROCESSING_STATUS_IN_SAFETY_NET => 'The request is being processed, but the system has determined that there is a potential error with the feed',
         FeedInterface::PROCESSING_STATUS_SUBMITTED => 'The request has been received, but has not yet started processing',
         FeedInterface::PROCESSING_STATUS_UNCONFIRMED => 'The request is pending',
-      ]);
+      ])
+      ->setDisplayOptions('view', [
+        'type' => 'commerce_amws_feed_processing_status',
+        'weight' => 2,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
 
     $fields['result'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Result'))
@@ -253,7 +272,7 @@ class Feed extends ContentEntityBase implements FeedInterface {
       ->setTranslatable(TRUE)
       ->setDisplayOptions('view', [
         'type' => 'string',
-        'weight' => 0,
+        'weight' => 5,
       ])
       ->setDisplayConfigurable('view', TRUE);
 
@@ -267,9 +286,8 @@ class Feed extends ContentEntityBase implements FeedInterface {
       ->setSetting('target_type', 'commerce_amws_store')
       ->setSetting('handler', 'default')
       ->setDisplayOptions('view', [
-        'label' => 'hidden',
         'type' => 'entity_reference_label',
-        'weight' => -5,
+        'weight' => -1,
       ])
       ->setDisplayConfigurable('view', TRUE);
 

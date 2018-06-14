@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityListBuilder;
+use Drupal\Core\Link;
 use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -101,7 +102,7 @@ class FeedListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['id'] = t('ID');
+    $header['id'] = t('Submission ID');
     $header['type'] = t('Type');
     $header['submitted_date'] = t('Submitted');
     $header['changed'] = t('Updated');
@@ -119,6 +120,7 @@ class FeedListBuilder extends EntityListBuilder {
     /** @var \Drupal\commerce_amws_feed\Entity\FeedTypeInterface $feed_type */
     $feed_type = $this->feedTypeStorage->load($feed->bundle());
 
+    $id_link = new Link($feed->getSubmissionId(), $feed->urlInfo());
     $submitted = $feed->getSubmittedDate();
     $changed = $feed->getChangedTime();
     $processing_status = $feed
@@ -128,7 +130,7 @@ class FeedListBuilder extends EntityListBuilder {
         'type' => 'commerce_amws_feed_processing_status',
       ]);
 
-    $row['id'] = $feed->getSubmissionId();
+    $row['id'] = $id_link->toString();
     $row['type'] = $feed_type->label();
     $row['submitted_date'] = $this->dateFormatter->format($submitted, 'short');
     $row['changed'] = $this->dateFormatter->format($changed, 'short');
