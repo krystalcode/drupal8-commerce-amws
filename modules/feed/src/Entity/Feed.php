@@ -247,6 +247,16 @@ class Feed extends ContentEntityBase implements FeedInterface {
         FeedInterface::PROCESSING_STATUS_UNCONFIRMED => 'The request is pending',
       ]);
 
+    $fields['result'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(t('Result'))
+      ->setDescription(t('The raw result of the feed processing'))
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'string',
+        'weight' => 0,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
     // The Amazon MWS stores that the feed belongs to.
     $fields['amws_stores'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Amazon MWS Stores'))

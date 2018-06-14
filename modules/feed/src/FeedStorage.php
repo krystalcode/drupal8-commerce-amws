@@ -13,6 +13,13 @@ class FeedStorage extends SqlContentEntityStorage implements FeedStorageInterfac
   /**
    * {@inheritdoc}
    */
+  public function loadFeeds(array $options = []) {
+    return $this->buildFeedsQueryAndExecute($options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function loadSubmitted(array $options = []) {
     $options = array_merge(
       [
@@ -29,8 +36,68 @@ class FeedStorage extends SqlContentEntityStorage implements FeedStorageInterfac
       $options
     );
 
-    $query = $this->getQuery()
-      ->condition('processing_status', $options['statuses'], 'IN');
+    return $this->buildFeedsQueryAndExecute($options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function loadProcessed(array $options = []) {
+    $options = array_merge(
+      [
+        'limit' => NULL,
+        'statuses' => [
+          FeedInterface::PROCESSING_STATUS_CANCELLED,
+          FeedInterface::PROCESSING_STATUS_DONE,
+        ],
+        'store_id' => NULL,
+        'with_result' => FALSE,
+      ],
+      $options
+    );
+
+    $query = $this->buildFeedsQuery($options);
+
+    if ($options['with_result']) {
+      $query->condition('result', NULL, 'IS NOT NULL');
+    }
+    else {
+      $query->condition('result', NULL, 'IS NULL');
+    }
+
+    $ids = $query->execute();
+
+    if (!$ids) {
+      return [];
+    }
+
+    return $this->loadMultiple($ids);
+  }
+
+  /**
+   * Builds the query for loading feeds.
+   *
+   * @param array $options
+   *   An array of options that will determine which feeds to load.
+   *
+   * @see self::loadFeeds()
+   *   For the list of available options.
+   */
+  protected function buildFeedsQuery(array $options = []) {
+    $options = array_merge(
+      [
+        'limit' => NULL,
+        'statuses' => [],
+        'store_id' => NULL,
+      ],
+      $options
+    );
+
+    $query = $this->getQuery();
+
+    if ($options['statuses']) {
+      $query->condition('processing_status', $options['statuses'], 'IN');
+    }
 
     if ($options['store_id']) {
       $query->condition('amws_stores', $options['store_id']);
@@ -40,7 +107,23 @@ class FeedStorage extends SqlContentEntityStorage implements FeedStorageInterfac
       $query->range(0, $options['limit']);
     }
 
-    $ids = $query->execute();
+    return $query;
+  }
+
+  /**
+   * Builds and executes the query for loading feeds.
+   *
+   * @param array $options
+   *   An array of options that will determine which feeds to load.
+   *
+   * @return \Drupal\commerce_amws_feed\Entity\FeedInterface[]|null
+   *   An array with the loaded feeds, or NULL if there were none.
+   *
+   * @see self::loadFeeds()
+   *   For the list of available options.
+   */
+  protected function buildFeedsQueryAndExecute(array $options = []) {
+    $ids = $this->buildFeedsQuery($options)->execute();
 
     if (!$ids) {
       return [];

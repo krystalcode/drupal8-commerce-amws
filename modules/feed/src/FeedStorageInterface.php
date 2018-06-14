@@ -10,7 +10,23 @@ use Drupal\Core\Entity\ContentEntityStorageInterface;
 interface FeedStorageInterface extends ContentEntityStorageInterface {
 
   /**
-   * Load feeds submitted to Amazon MWS.
+   * Loads feeds based on the given options.
+   *
+   * @param array $options
+   *   An array of options that will determine which feeds to load. Supported
+   *   options are:
+   *   - limit: An integer number limiting the number of feeds to load.
+   *   - statuses: A list of processing statuses; if provided, only feeds with
+   *     the given statuses will be loaded.
+   *   - store_id: The Amazon MWS store ID for which to load feeds.
+   *
+   * @return \Drupal\commerce_amws_product\Entity\FeedInterface[]|null
+   *   The feeds, or NULL if there is none.
+   */
+  public function loadFeeds(array $options = []);
+
+  /**
+   * Loads feeds submitted to Amazon MWS.
    *
    * @param array $options
    *   An array of options that will determine which submitted feeds to
@@ -26,5 +42,22 @@ interface FeedStorageInterface extends ContentEntityStorageInterface {
    *   The submitted feeds, or NULL if there is none.
    */
   public function loadSubmitted(array $options = []);
+
+  /**
+   * Loads feeds that have already been processed.
+   *
+   * @param array $options
+   *   An array of options that will determine which processed feeds to
+   *   load. Supported options are:
+   *   - limit: An integer number limiting the number of feeds to load.
+   *   - statuses: A list of statuses that are considered as processed. By
+   *     default feeds that are marked by Amazon MWS as Done or Cancelled are
+   *     considered as processed.
+   *   - store_id: The Amazon MWS store ID for which to load feeds.
+   *
+   * @return \Drupal\commerce_amws_product\Entity\FeedInterface[]|null
+   *   The processed feeds, or NULL if there is none.
+   */
+  public function loadProcessed(array $options = []);
 
 }

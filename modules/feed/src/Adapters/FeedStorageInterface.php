@@ -16,6 +16,14 @@ interface FeedStorageInterface {
    * @param \Drupal\commerce_amws_feed\Entity\FeedInterface[] $feeds
    *   The feeds for which to fetch the results.
    */
-  public function update(array $feeds);
+  public function updateResult(array $feeds);
+
+  /**
+   * Updates the given feeds with the processing status fetched from Amazon.
+   *
+   * @param \Drupal\commerce_amws_feed\Entity\FeedInterface[] $feeds
+   *   The feeds for which to fetch the status.
+   */
+  public function updateStatus(array $feeds);
 
 }

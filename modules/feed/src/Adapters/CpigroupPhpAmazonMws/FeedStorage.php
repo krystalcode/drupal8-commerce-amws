@@ -56,7 +56,22 @@ class FeedStorage implements FeedRemoteStorageInterface {
   /**
    * {@inheritdoc}
    */
-  public function update(array $feeds) {
+  public function updateResult(array $feeds) {
+    if (!$feeds) {
+      return;
+    }
+
+    foreach ($feeds as $feed) {
+      $result = $this->fetchResult($feed);
+      $feed->set('result', $result);
+      $feed->save();
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function updateStatus(array $feeds) {
     if (!$feeds) {
       return;
     }
@@ -72,6 +87,7 @@ class FeedStorage implements FeedRemoteStorageInterface {
       []
     );
 
+    // Fetch the list of feed statuses.
     $this->amwsFeedList->setFeedIds(array_keys($keyed_feeds));
     $this->amwsFeedList->setUseToken();
     $this->amwsFeedList->fetchFeedSubmissions();
@@ -81,22 +97,50 @@ class FeedStorage implements FeedRemoteStorageInterface {
       return;
     }
 
+    // Save status information on the Drupal feed entity.
     foreach ($results as $result) {
       $submission_id = $result['FeedSubmissionId'];
+      /** @var \Drupal\commerce_amws_feed\Entity\FeedInterface $feed */
+      $feed = $keyed_feeds[$submission_id];
+
       // @I Move dynamic status constant generation to a utility class.
       $constant = FeedInterface::class . '::PROCESSING_STATUS_' . trim($result['FeedProcessingStatus'], '_');
-      $keyed_feeds[$submission_id]->setProcessingStatus(constant($constant));
+      $feed->setProcessingStatus(constant($constant));
 
       if (!empty($result['StartedProcessingDate'])) {
-        $keyed_feeds[$submission_id]->setStartedProcessingDate(strtotime($result['StartedProcessingDate']));
+        $timestamp = strtotime($result['StartedProcessingDate']);
+        $feed->setStartedProcessingDate($started_time);
       }
 
       if (!empty($result['CompletedProcessingDate'])) {
-        $keyed_feeds[$submission_id]->setCompletedProcessingDate(strtotime($result['CompletedProcessingDate']));
+        $timestamp = strtotime($result['CompletedProcessingDate']);
+        $feed->setCompletedProcessingDate($completed_time);
       }
 
-      $keyed_feeds[$submission_id]->save();
+      $feed->save();
     }
+  }
+
+  /**
+   * Fetches the result for the given feed from Amazon MWS.
+   *
+   * @param \Drupal\commerce_amws_feed\Entity\FeedInterface $feed
+   *   The feed for which to fetch the result.
+   *
+   * @return string
+   *   The raw XML result for the feed.
+   */
+  protected function fetchResult(FeedInterface $feed) {
+    $amwsFeedResult = new \AmazonFeedResult(
+      $this->amwsStore->id(),
+      $feed->getSubmissionId(),
+      FALSE,
+      NULL,
+      $this->prepareStoreConfig($this->amwsStore)
+    );
+    $amwsFeedResult->fetchFeedResult();
+
+    return $amwsFeedResult->getRawFeed();
   }
 
 }

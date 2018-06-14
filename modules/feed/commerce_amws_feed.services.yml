@@ -1,0 +1,4 @@
+services:
+  commerce_amws_feed.feed_service:
+    class: \Drupal\commerce_amws_feed\FeedService
+    arguments: ['@entity_type.manager', '@logger.factory']
