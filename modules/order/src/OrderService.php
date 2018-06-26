@@ -146,6 +146,9 @@ class OrderService {
     }
 
     $order = $this->doCreateOrder($amws_order);
+    if (!$order) {
+      return;
+    }
 
     // Create order items and add them to the order.
     $amws_order_item_list = $amws_order->fetchItems();
@@ -309,6 +312,19 @@ class OrderService {
       $variation = $this->variationStorage->loadBySku($amws_order_item['SellerSKU']);
 
       $product = $variation->getProduct();
+      if (!$product) {
+        $message = sprintf(
+          'No product could be determined for the variation with ID "%s" and SKU "%s". A parent product is required for every variation by Drupal Commerce, and it is used by Commerce Amazon MWS to determine the store that the order will be assigned to. Order ID: %s. Order data: %s. Order item data: %s',
+          $variation->id(),
+          $variation->getSku(),
+          $amws_order->getAmazonOrderId(),
+          json_encode($amws_order->getData()),
+          json_encode($amws_order_item)
+        );
+        $this->logger->error($message);
+        return;
+      }
+
       $store_ids = $product->getStoreIds();
       if (!$store_ids) {
         continue;
