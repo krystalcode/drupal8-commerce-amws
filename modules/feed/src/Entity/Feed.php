@@ -266,13 +266,23 @@ class Feed extends ContentEntityBase implements FeedInterface {
       ])
       ->setDisplayConfigurable('view', TRUE);
 
+    $fields['content'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(t('Content'))
+      ->setDescription(t('The content submitted for processing'))
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('view', [
+        'type' => 'string',
+        'weight' => 5,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['result'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Result'))
       ->setDescription(t('The raw result of the feed processing'))
       ->setTranslatable(TRUE)
       ->setDisplayOptions('view', [
         'type' => 'string',
-        'weight' => 5,
+        'weight' => 6,
       ])
       ->setDisplayConfigurable('view', TRUE);
 
