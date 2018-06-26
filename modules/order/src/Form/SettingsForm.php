@@ -2,11 +2,8 @@
 
 namespace Drupal\commerce_amws_order\Form;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfigFormBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Amazon MWS order settings form.

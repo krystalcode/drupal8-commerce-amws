@@ -3,11 +3,11 @@
 namespace Drupal\commerce_amws_order\Commands;
 
 use Drupal\commerce_amws\Entity\StoreInterface as AmwsStoreInterface;
-use Drupal\commerce_amws_order\Adapters\CpigroupPhpAmazonMws\OrderStorage as AmwsOrderStorage;
+use Drupal\commerce_amws_order\Adapters\CpigroupPhpAmazonMws\OrderStorage as AmwsRemoteOrderStorage;
 use Drupal\commerce_amws_order\OrderService;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drush\Commands\DrushCommands;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drush\Commands\DrushCommands;
 
 /**
  * Drush commands that provide operations related to Amazon MWS orders.
@@ -72,7 +72,8 @@ class Commands extends DrushCommands {
    *
    * @command commerce-amws-order:import-orders
    *
-   * @option $limit An integer number limiting the number of orders to import.
+   * @option $limit
+   *   An integer number limiting the number of orders to import per store.
    *
    * @validate-module-enabled commerce_amws_order
    *
@@ -92,7 +93,7 @@ class Commands extends DrushCommands {
 
     $amws_stores = $this->amwsStoreStorage->loadMultiple($amws_store_ids);
     foreach ($amws_stores as $amws_store) {
-      $amws_order_storage = new AmwsOrderStorage(
+      $amws_order_storage = new AmwsRemoteOrderStorage(
         $amws_store,
         $this->orderStorage,
         $this->amwsOrderService,
