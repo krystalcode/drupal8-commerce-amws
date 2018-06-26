@@ -86,16 +86,17 @@ class FeedListBuilder extends EntityListBuilder {
    * Sort feeds by the day they were submitted.
    */
   public function load() {
-    $entities = parent::load();
-    uasort(
-      $entities,
-      function ($a, $b) {
-        $a_submitted = $a->getSubmittedDate();
-        $b_submitted = $b->getSubmittedDate();
-        return ($a_submitted > $b_submitted) ? -1 : 1;
-      }
-    );
-    return $entities;
+    $query = $this->getStorage()
+      ->getQuery()
+      ->sort('submitted_date', 'DESC');
+
+    if ($this->limit) {
+      $query->pager($this->limit);
+    }
+
+    $entity_ids = $query->execute();
+
+    return $this->storage->loadMultiple($entity_ids);
   }
 
   /**
