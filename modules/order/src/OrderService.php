@@ -268,6 +268,11 @@ class OrderService {
     $unit_price = $total_price->divide($data['QuantityOrdered']);
     $order_item->setUnitPrice($unit_price);
 
+    // Remote ID.
+    if (!empty($data['OrderItemId'])) {
+      $order_item->set('amws_remote_id', $data['OrderItemId']);
+    }
+
     // Allow subscribers to modify the order item before being saved.
     $event = new AmwsOrderItemEvent($order_item, $data);
     $this->eventDispatcher->dispatch(AmwsOrderItemEvents::ORDER_ITEM_CREATE, $event);
