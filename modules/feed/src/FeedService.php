@@ -89,7 +89,7 @@ class FeedService implements FeedServiceInterface {
         $amws_store,
         $this->logger
       );
-      $remote_feed_storage->update($feeds);
+      $remote_feed_storage->updateStatus($feeds);
       unset($remote_feed_storage);
     }
   }
@@ -132,7 +132,7 @@ class FeedService implements FeedServiceInterface {
         $amws_store,
         $this->logger
       );
-      $remote_feed_storage->results($feeds);
+      $remote_feed_storage->updateResult($feeds);
       unset($remote_feed_storage);
     }
   }
