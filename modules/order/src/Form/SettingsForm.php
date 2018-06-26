@@ -36,6 +36,19 @@ class SettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('commerce_amws_order.settings');
 
+    // General settings.
+    $form['general'] = [
+      '#type' => 'details',
+      '#title' => $this->t('General import settings'),
+      '#open' => TRUE,
+    ];
+    $form['general']['general_address_convert_states'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Convert US states to their 2-digit codes'),
+      '#description' => $this->t('Normally, the state in USA shipping addresses is provided by Amazon MWS with its 2-digit code. However, in certain cases the full state name is given instead e.g. NEW MEXICO instead of NM. By default, addresses will be kept as they come through. When this option is check, full state names will be converted to their 2-digit codes before storing them on the website. Conversion of administrative areas in the USA only are supported at the moment.'),
+      '#default_value' => $config->get('general.address_convert_states'),
+    ];
+
     // Billing profile.
     $form['billing_profile'] = [
       '#type' => 'details',
@@ -115,6 +128,10 @@ class SettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('commerce_amws_order.settings');
+
+    // General import settings.
+    $convert_states = $form_state->getValue('general_address_convert_states');
+    $config->set('general.address_convert_states', $convert_states);
 
     // Billing profile settings.
     $profile_status = $form_state->getValue('billing_profile_status');

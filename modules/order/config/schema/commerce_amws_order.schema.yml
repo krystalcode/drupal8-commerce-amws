@@ -2,6 +2,13 @@ commerce_amws_order.settings:
   type: config_object
   label: 'Amazon MWS order settings'
   mapping:
+    general:
+      type: mapping
+      label: 'General settings'
+      mapping:
+        address_convert_states:
+          type: boolean
+          label: 'Convert state or region full names to their equivalent codes'
     cron:
       type: mapping
       label: 'Cron settings'

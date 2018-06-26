@@ -5,7 +5,7 @@ services:
 
   commerce_amws_order.helper_service:
     class: Drupal\commerce_amws_order\HelperService
-    arguments: ['@entity_type.manager', '@event_dispatcher']
+    arguments: ['@entity_type.manager', '@event_dispatcher', '@config.factory', '@logger.factory']
 
   commerce_amws_order.order_number_subscriber:
     class: Drupal\commerce_amws_order\EventSubscriber\OrderNumberSubscriber
