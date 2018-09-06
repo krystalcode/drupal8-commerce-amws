@@ -1,7 +1,4 @@
 services:
-  commerce_amws.helper_service:
-    class: Drupal\commerce_amws\HelperService
-
   commerce_amws.dev_commands:
     class: \Drupal\commerce_amws\Commands\DevCommands
     arguments: ['@entity_type.manager']
