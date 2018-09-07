@@ -67,9 +67,9 @@ class OrderServiceTest extends UnitTestCase {
     );
 
     // Parse the test order xml and order item xml data.
-    $xml_order_data = simplexml_load_file(__DIR__ . '/fetchOrder.xml');
+    $xml_order_data = simplexml_load_file(__DIR__ . '/MockData/fetchOrder.xml');
     $xml_order_data = $this->parseOrderXml($xml_order_data->GetOrderResult->Orders->Order);
-    $xml_order_item_data = simplexml_load_file(__DIR__ . '/fetchOrderItems.xml');
+    $xml_order_item_data = simplexml_load_file(__DIR__ . '/MockData/fetchOrderItems.xml');
     $xml_order_item_data = $this->parseOrderItemXml($xml_order_item_data->ListOrderItemsResult->OrderItems);
 
     // Create a mock Amazon order item class.
