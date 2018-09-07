@@ -1,7 +1,7 @@
 services:
   commerce_amws_order.order_service:
     class: Drupal\commerce_amws_order\OrderService
-    arguments: ['@entity_type.manager', '@commerce_amws.helper_service', '@datetime.time', '@event_dispatcher', '@logger.factory']
+    arguments: ['@entity_type.manager', '@datetime.time', '@event_dispatcher', '@logger.factory']
 
   commerce_amws_order.helper_service:
     class: Drupal\commerce_amws_order\HelperService
