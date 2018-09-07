@@ -2,11 +2,11 @@
 
 namespace Drupal\commerce_amws_order;
 
-use Drupal\commerce_amws\HelperService;
 use Drupal\commerce_amws_order\Event\OrderEvent as AmwsOrderEvent;
 use Drupal\commerce_amws_order\Event\OrderEvents as AmwsOrderEvents;
 use Drupal\commerce_amws_order\Event\OrderItemEvent as AmwsOrderItemEvent;
 use Drupal\commerce_amws_order\Event\OrderItemEvents as AmwsOrderItemEvents;
+use Drupal\commerce_amws\Utilities;
 use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -65,13 +65,6 @@ class OrderService {
   protected $variationStorage;
 
   /**
-   * The Amazon MWS helper service.
-   *
-   * @var \Drupal\commerce_amws\HelperService
-   */
-  protected $helper;
-
-  /**
    * The system time.
    *
    * @var \Drupal\Component\Datetime\TimeInterface
@@ -97,9 +90,6 @@ class OrderService {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
-   * @param \Drupal\commerce_amws\HelperService $helper
-   *   The Amazon MWS helper service for converting price information to price
-   *   entities.
    * @param \Drupal\Component\Datetime\TimeInterface $time
    *   The system time.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
@@ -109,7 +99,6 @@ class OrderService {
    */
   public function __construct(
     EntityTypeManagerInterface $entity_type_manager,
-    HelperService $helper,
     TimeInterface $time,
     EventDispatcherInterface $event_dispatcher,
     LoggerChannelFactoryInterface $logger_factory
@@ -118,7 +107,6 @@ class OrderService {
     $this->orderItemStorage = $entity_type_manager->getStorage('commerce_order_item');
     $this->variationStorage = $entity_type_manager->getStorage('commerce_product_variation');
 
-    $this->helper = $helper;
     $this->time = $time;
     $this->eventDispatcher = $event_dispatcher;
     $this->logger = $logger_factory->get(self::LOGGER_CHANNEL);
@@ -259,13 +247,13 @@ class OrderService {
 
     // Set the unit price; that will trigger calculating the order item's total
     // price as well.
-    $total_price = $this->helper->amwsPriceToDrupalPrice($data['ItemPrice']);
+    $total_price = Utilities::amwsPriceToDrupalPrice($data['ItemPrice']);
     // Subtract any promotion discount as well.
     // We might develop a feature of connecting Drupal promotions with Amazon
     // MWS promotions, but that needs a bit more thinking. For now, don't create
     // an adjustment.
     if (!empty($data['PromotionDiscount']) && $data['PromotionDiscount']['Amount'] != 0) {
-      $discount = $this->helper->amwsPriceToDrupalPrice($data['PromotionDiscount']);
+      $discount = Utilities::amwsPriceToDrupalPrice($data['PromotionDiscount']);
       $total_price = $total_price->subtract($discount);
     }
     $unit_price = $total_price->divide($data['QuantityOrdered']);
