@@ -51,6 +51,78 @@ class UtilitiesTest extends UnitTestCase {
       'c' => 'blue',
     ];
     $this->assertEquals($expected_array, Utilities::arrayMergeRecursive($array1, $array2));
+
+    // Test a straight-forward recursive array merge.
+    $array1 = [
+      'a' => 'red',
+      'b' => [
+        'green' => [
+          'light_green',
+          'dark_green',
+        ],
+      ],
+    ];
+    $array2 = [
+      'c' => 'blue',
+      'd' => 'yellow',
+      'e' => [
+        'orange' => [
+          'light_orange',
+        ],
+      ],
+    ];
+
+    $expected_array = [
+      'a' => 'red',
+      'b' => [
+        'green' => [
+          'light_green',
+          'dark_green',
+        ],
+      ],
+      'c' => 'blue',
+      'd' => 'yellow',
+      'e' => [
+        'orange' => [
+          'light_orange',
+        ],
+      ],
+    ];
+    $this->assertEquals($expected_array, Utilities::arrayMergeRecursive($array1, $array2));
+
+    // Finally, test a recursive array merge with duplicate keys.
+    $array1 = [
+      'a' => 'red',
+      'b' => [
+        'green' => [
+          'light_green',
+          'dark_green',
+        ],
+      ],
+    ];
+    $array2 = [
+      'c' => 'blue',
+      'd' => 'yellow',
+      'b' => [
+        'green' => [
+          'pale_green',
+        ],
+      ],
+    ];
+
+    $expected_array = [
+      'a' => 'red',
+      'b' => [
+        'green' => [
+          'light_green',
+          'dark_green',
+          'pale_green',
+        ],
+      ],
+      'c' => 'blue',
+      'd' => 'yellow',
+    ];
+    $this->assertEquals($expected_array, Utilities::arrayMergeRecursive($array1, $array2));
   }
 
   /**
