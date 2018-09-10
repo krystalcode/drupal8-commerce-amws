@@ -236,7 +236,7 @@ class OrderStorageTest extends UnitTestCase {
   /**
    * Call protected/private method of a class.
    *
-   * We'll need this special function to test the protected parse functions.
+   * We'll need this special function to test the protected filter functions.
    *
    * @param object &$object
    *   Instantiated object that we will run method on.
