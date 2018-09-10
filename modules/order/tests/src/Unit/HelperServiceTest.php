@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\commerce_amws_order\Unit;
 
-use \AmazonOrder;
+use AmazonOrder;
 
 use Drupal\commerce_amws_order\HelperService;
 use Drupal\commerce_order\Entity\OrderInterface;
@@ -30,25 +30,11 @@ define('COMMERCE_AMWS_ORDER_LOGGER_CHANNEL', 'commerce_amws_order');
 class HelperServiceTest extends UnitTestCase {
 
   /**
-   * A sample order.
-   *
-   * @var \Drupal\commerce_order\Entity\OrderInterface
-   */
-  protected $order;
-
-  /**
-   * An Amazon order object.
-   *
-   * @var \AmazonOrder
-   */
-  protected $amazonOrder;
-
-  /**
    * The Amazon MWS helper service.
    *
    * @var \Drupal\commerce_amws_order\HelperService
    */
-  protected $orderHelper;
+  protected $amwsHelperService;
 
   /**
    * {@inheritdoc}
@@ -58,43 +44,65 @@ class HelperServiceTest extends UnitTestCase {
 
     // Create a new Helper Service class.
     $this->createHelperServiceClass();
+  }
 
-    // Create a mock Amazon order class.
-    $shipping_address = [
-      'Name' => 'John Smith',
-      'AddressLine1' => '2700 First Avenue',
-      'AddressLine2' => 'Apartment 1',
-      'AddressLine3' => 'Suite 16',
-      'City' => 'Seattle',
-      'County' => 'County',
-      'District' => 'District',
-      'StateOrRegion' => 'WA',
-      'PostalCode' => '98102',
-      'CountryCode' => 'US',
-      'Phone' => '123',
-    ];
+  /**
+   * @covers ::parseAmwsAddress
+   */
+  public function testParseAmwsAddress() {
+    $address = $this->invokeMethod(
+      $this->amwsHelperService,
+      'parseAmwsAddress',
+      [$this->getShippingAddress()]
+    );
 
-    $this->amazonOrder = $this->prophesize(AmazonOrder::class);
-    $this->amazonOrder->getShippingAddress()->willReturn($shipping_address);
-    $this->amazonOrder = $this->amazonOrder->reveal();
+    // Assert the address is parsed in the format we expect.
+    $this->assertEquals('2700 First Avenue', $address['address_line1']);
+    $this->assertEquals('Apartment 1, Suite 16', $address['address_line2']);
+    $this->assertEquals('Seattle', $address['locality']);
+    $this->assertEquals('WA', $address['administrative_area']);
+    $this->assertEquals('98102', $address['postal_code']);
+    $this->assertEquals('US', $address['country_code']);
+  }
 
-    // Create a mock commerce order.
-    $this->order = $this->prophesize(OrderInterface::class);
-    $this->order->id()->willReturn('058-1233752-8214740');
-    $this->order->getCustomerId()->willReturn('111');
-    $this->order = $this->order->reveal();
+  /**
+   * @covers ::parseAmwsName
+   */
+  public function testParseAmwsName() {
+    $name = $this->invokeMethod(
+      $this->amwsHelperService,
+      'parseAmwsName',
+      [$this->getShippingAddress()['Name']]
+    );
+
+    // Assert the name is parsed in the format we expect.
+    $this->assertEquals('Smith', $name['family_name']);
+    $this->assertEquals('John', $name['given_name']);
   }
 
   /**
    * @covers ::amwsAddressToCustomerProfile
    */
   public function testAmwsAddressToCustomerProfile() {
-    $profile = $this->orderHelper->amwsAddressToCustomerProfile(
-      $this->order,
-      $this->amazonOrder
+    // Create a mock Amazon order class.
+    $amazonOrder = $this->prophesize(AmazonOrder::class);
+    $amazonOrder->getShippingAddress()
+      ->willReturn($this->getShippingAddress());
+    $amazonOrder = $amazonOrder->reveal();
+
+    // Create a mock commerce order.
+    $order = $this->prophesize(OrderInterface::class);
+    $order->id()->willReturn('058-1233752-8214740');
+    $order->getCustomerId()->willReturn('111');
+    $order = $order->reveal();
+
+    // Now, test the amwsAddressToCustomerProfile() function.
+    $profile = $this->amwsHelperService->amwsAddressToCustomerProfile(
+      $order,
+      $amazonOrder
     );
 
-    // Test that the profile contains what we're expecting.
+    // Assert that the profile contains what we're expecting.
     $this->assertEquals(121, $profile->id());
     $this->assertEquals('customer', $profile->getEntityTypeId());
     $this->assertEquals(111, $profile->getOwnerId());
@@ -140,12 +148,57 @@ class HelperServiceTest extends UnitTestCase {
       ->willReturn($this->prophesize(ImmutableConfig::class)->reveal());
     $logger_factory = $this->prophesize(LoggerChannelFactoryInterface::class);
 
-    $this->orderHelper = new HelperService(
+    $this->amwsHelperService = new HelperService(
       $entity_type_manager->reveal(),
       $event_dispatcher->reveal(),
       $config_factory->reveal(),
       $logger_factory->reveal()
     );
+  }
+
+  /**
+   * Returns a sample array containing the Amazon MWS address data.
+   *
+   * @return array
+   *   The Amazon MWS address data.
+   */
+  protected function getShippingAddress() {
+    return [
+      'Name' => 'John Smith',
+      'AddressLine1' => '2700 First Avenue',
+      'AddressLine2' => 'Apartment 1',
+      'AddressLine3' => 'Suite 16',
+      'City' => 'Seattle',
+      'County' => 'County',
+      'District' => 'District',
+      'StateOrRegion' => 'WA',
+      'PostalCode' => '98102',
+      'CountryCode' => 'US',
+      'Phone' => '123',
+    ];
+  }
+
+  /**
+   * Call protected/private method of a class.
+   *
+   * We'll need this special function to test the protected parse functions.
+   *
+   * @param object &$object
+   *   Instantiated object that we will run method on.
+   * @param string $methodName
+   *   Method name to call.
+   * @param array $parameters
+   *   Array of parameters to pass into method.
+   *
+   * @return mixed
+   *   Method return.
+   */
+  protected function invokeMethod(&$object, $methodName, array $parameters = []) {
+    $reflection = new \ReflectionClass(get_class($object));
+    $method = $reflection->getMethod($methodName);
+    $method->setAccessible(TRUE);
+
+    return $method->invokeArgs($object, $parameters);
   }
 
 }
