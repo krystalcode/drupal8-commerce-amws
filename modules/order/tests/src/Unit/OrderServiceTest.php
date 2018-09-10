@@ -2,9 +2,6 @@
 
 namespace Drupal\Tests\commerce_amws_order\Unit;
 
-use AmazonOrder;
-use AmazonOrderItemList;
-
 use Drupal\commerce_amws_order\OrderService;
 use Drupal\commerce_order\Entity\OrderInterface;
 use Drupal\commerce_order\Entity\OrderItemInterface;
@@ -13,12 +10,15 @@ use Drupal\commerce_price\Price;
 use Drupal\commerce_product\Entity\ProductInterface;
 use Drupal\commerce_product\Entity\ProductVariationInterface;
 use Drupal\commerce_product\ProductVariationStorageInterface;
+
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Tests\UnitTestCase;
 
+use AmazonOrder;
+use AmazonOrderItemList;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
