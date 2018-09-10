@@ -51,29 +51,6 @@ class OrderServiceTest extends UnitTestCase {
   }
 
   /**
-   * Call protected/private method of a class.
-   *
-   * We'll need this special function to test the protected validate functions.
-   *
-   * @param object &$object
-   *   Instantiated object that we will run method on.
-   * @param string $methodName
-   *   Method name to call.
-   * @param array $parameters
-   *   Array of parameters to pass into method.
-   *
-   * @return mixed
-   *   Method return.
-   */
-  public function invokeMethod(&$object, $methodName, array $parameters = []) {
-    $reflection = new \ReflectionClass(get_class($object));
-    $method = $reflection->getMethod($methodName);
-    $method->setAccessible(TRUE);
-
-    return $method->invokeArgs($object, $parameters);
-  }
-
-  /**
    * @covers ::validateAmwsOrder
    */
   public function testValidateAmwsOrder() {
@@ -212,7 +189,7 @@ class OrderServiceTest extends UnitTestCase {
     // Now, test createOrder().
     $order = $this->amwsOrderService->createOrder($amazonOrder);
 
-    // Test that the returned order contains what we're expecting.
+    // Assert that the returned order contains what we're expecting.
     $this->assertEquals(1001, $order->id());
   }
 
@@ -364,6 +341,29 @@ class OrderServiceTest extends UnitTestCase {
         ],
       ],
     ];
+  }
+
+  /**
+   * Call protected/private method of a class.
+   *
+   * We'll need this special function to test the protected validate functions.
+   *
+   * @param object &$object
+   *   Instantiated object that we will run method on.
+   * @param string $methodName
+   *   Method name to call.
+   * @param array $parameters
+   *   Array of parameters to pass into method.
+   *
+   * @return mixed
+   *   Method return.
+   */
+  protected function invokeMethod(&$object, $methodName, array $parameters = []) {
+    $reflection = new \ReflectionClass(get_class($object));
+    $method = $reflection->getMethod($methodName);
+    $method->setAccessible(TRUE);
+
+    return $method->invokeArgs($object, $parameters);
   }
 
 }
