@@ -16,6 +16,8 @@ use Drupal\Tests\UnitTestCase;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+define('COMMERCE_AMWS_ORDER_LOGGER_CHANNEL', 'commerce_amws_order');
+
 /**
  * Class HelperServiceTest.
  *
@@ -55,47 +57,7 @@ class HelperServiceTest extends UnitTestCase {
     parent::setUp();
 
     // Create a new Helper Service class.
-    /** @var \Drupal\profile\Entity\ProfileInterface $profile */
-    $profile = $this->prophesize(ProfileInterface::class);
-    $profile->id()->willReturn(121);
-    $profile->getEntityTypeId()->willReturn('customer');
-    $profile->getOwnerId()->willReturn(111);
-    $profile->save()->willReturn($profile);
-    $profile = $profile->reveal();
-
-    /** @var \Drupal\profile\ProfileStorageInterface $profile_storage */
-    $profile_storage = $this->prophesize(ProfileStorageInterface::class);
-    $address = [
-      "country_code" => "US",
-      "administrative_area" => "WA",
-      "locality" => "Seattle",
-      "postal_code" => "98102",
-      "address_line1" => "2700 First Avenue",
-      "address_line2" => "Apartment 1, Suite 16",
-      "family_name" => "Smith",
-      "given_name" => "John",
-    ];
-    $profile_storage->create([
-      'type' => 'customer',
-      'uid' => 111,
-      'address' => $address,
-    ])->willReturn($profile);
-    $profile_storage = $profile_storage->reveal();
-
-    $entity_type_manager = $this->prophesize(EntityTypeManagerInterface::class);
-    $entity_type_manager->getStorage('profile')->willReturn($profile_storage);
-    $event_dispatcher = $this->prophesize(EventDispatcherInterface::class);
-    $config_factory = $this->prophesize(ConfigFactoryInterface::class);
-    $config_factory->get('commerce_amws_order.settings')
-      ->willReturn($this->prophesize(ImmutableConfig::class)->reveal());
-    $logger_factory = $this->prophesize(LoggerChannelFactoryInterface::class);
-
-    $this->orderHelper = new HelperService(
-      $entity_type_manager->reveal(),
-      $event_dispatcher->reveal(),
-      $config_factory->reveal(),
-      $logger_factory->reveal()
-    );
+    $this->createHelperServiceClass();
 
     // Create a mock Amazon order class.
     $shipping_address = [
@@ -132,7 +94,58 @@ class HelperServiceTest extends UnitTestCase {
       $this->amazonOrder
     );
 
+    // Test that the profile contains what we're expecting.
     $this->assertEquals(121, $profile->id());
+    $this->assertEquals('customer', $profile->getEntityTypeId());
+    $this->assertEquals(111, $profile->getOwnerId());
+  }
+
+  /**
+   * Creates a mock helper service class.
+   */
+  protected function createHelperServiceClass() {
+    // First, let's mock some classes needed for the HelperService class.
+    /** @var \Drupal\profile\Entity\ProfileInterface $profile */
+    $profile = $this->prophesize(ProfileInterface::class);
+    $profile->id()->willReturn(121);
+    $profile->getEntityTypeId()->willReturn('customer');
+    $profile->getOwnerId()->willReturn(111);
+    $profile->save()->willReturn($profile);
+    $profile = $profile->reveal();
+
+    /** @var \Drupal\profile\ProfileStorageInterface $profile_storage */
+    $profile_storage = $this->prophesize(ProfileStorageInterface::class);
+    $address = [
+      'country_code' => 'US',
+      'administrative_area' => 'WA',
+      'locality' => 'Seattle',
+      'postal_code' => '98102',
+      'address_line1' => '2700 First Avenue',
+      'address_line2' => 'Apartment 1, Suite 16',
+      'family_name' => 'Smith',
+      'given_name' => 'John',
+    ];
+    $profile_storage->create([
+      'type' => 'customer',
+      'uid' => 111,
+      'address' => $address,
+    ])->willReturn($profile);
+    $profile_storage = $profile_storage->reveal();
+
+    $entity_type_manager = $this->prophesize(EntityTypeManagerInterface::class);
+    $entity_type_manager->getStorage('profile')->willReturn($profile_storage);
+    $event_dispatcher = $this->prophesize(EventDispatcherInterface::class);
+    $config_factory = $this->prophesize(ConfigFactoryInterface::class);
+    $config_factory->get('commerce_amws_order.settings')
+      ->willReturn($this->prophesize(ImmutableConfig::class)->reveal());
+    $logger_factory = $this->prophesize(LoggerChannelFactoryInterface::class);
+
+    $this->orderHelper = new HelperService(
+      $entity_type_manager->reveal(),
+      $event_dispatcher->reveal(),
+      $config_factory->reveal(),
+      $logger_factory->reveal()
+    );
   }
 
 }
