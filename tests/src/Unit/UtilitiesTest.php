@@ -31,7 +31,6 @@ class UtilitiesTest extends UnitTestCase {
       'd' => 'yellow',
     ];
 
-
     $expected_array = [
       'a' => 'red',
       'b' => 'green',
@@ -45,7 +44,6 @@ class UtilitiesTest extends UnitTestCase {
       'c' => 'blue',
       'b' => 'yellow',
     ];
-
 
     $expected_array = [
       'a' => 'red',
