@@ -2,18 +2,18 @@
 
 namespace Drupal\Tests\commerce_amws_order\Unit;
 
-use AmazonOrder;
-
 use Drupal\commerce_amws_order\HelperService;
 use Drupal\commerce_order\Entity\OrderInterface;
+use Drupal\profile\Entity\ProfileInterface;
+use Drupal\profile\ProfileStorageInterface;
+
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\profile\Entity\ProfileInterface;
-use Drupal\profile\ProfileStorageInterface;
 use Drupal\Tests\UnitTestCase;
 
+use AmazonOrder;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 define('COMMERCE_AMWS_ORDER_LOGGER_CHANNEL', 'commerce_amws_order');
