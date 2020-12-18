@@ -72,3 +72,23 @@ commerce_amws_order.settings:
             sorting_code:
               type: string
               label: 'Sorting code'
+    purge:
+      type: mapping
+      label: 'Purge imported orders settings'
+      mapping:
+        status:
+          type: boolean
+          label: 'Purge status'
+        interval:
+          type: int
+          label: 'Interval in seconds after which orders will be purged'
+        cron:
+          type: mapping
+          label: 'Cron settings'
+          mapping:
+            status:
+              type: boolean
+              label: 'Cron status'
+            limit:
+              type: int
+              label: 'Limits the number of orders to purge'

@@ -14,6 +14,11 @@ use Drupal\commerce_amws_order\Adapters\CpigroupPhpAmazonMws\OrderStorage as Amw
 
 /**
  * The name of the logger channel to use throughout this module.
+ *
+ * @I Use the logger service everywhere and remove channel name constant
+ *    type     : task
+ *    priority : low
+ *    labels   : coding-standards
  */
 const COMMERCE_AMWS_ORDER_LOGGER_CHANNEL = 'commerce_amws_order';
 
@@ -25,6 +30,23 @@ const COMMERCE_AMWS_ORDER_LOGGER_CHANNEL = 'commerce_amws_order';
  * Implements hook_cron().
  */
 function commerce_amws_order_cron() {
+  commerce_amws_order_cron__import();
+  commerce_amws_order_cron__purge();
+}
+
+/**
+ * Callbacks.
+ */
+
+/**
+ * Stub implementation of hook_cron() for importing orders.
+ *
+ * @I Move to a hook service
+ *    type     : task
+ *    priority : low
+ *    labels   : coding-standards
+ */
+function commerce_amws_order_cron__import() {
   $config = \Drupal::service('config.factory')->get('commerce_amws_order.settings');
   if (!$config->get('cron.status')) {
     return;
@@ -63,4 +85,20 @@ function commerce_amws_order_cron() {
     $amws_order_storage->import($options);
     unset($amws_order_storage);
   }
+}
+
+/**
+ * Stub implementation of hook_cron() for purging orders.
+ */
+function commerce_amws_order_cron__purge() {
+  $config = \Drupal::service('config.factory')->get('commerce_amws_order.settings');
+  if (!$config->get('purge.cron.status')) {
+    return;
+  }
+
+  $options = [
+    'interval' => (int) $config->get('purge.interval'),
+    'limit' => (int) $config->get('purge.cron.limit'),
+  ];
+  \Drupal::service('commerce_amws_order.order_purger')->purge($options, FALSE);
 }

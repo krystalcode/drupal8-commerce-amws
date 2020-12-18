@@ -2,6 +2,7 @@
 
 namespace Drupal\commerce_amws_order\Form;
 
+use Drupal\Core\Config\Config;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfigFormBase;
 
@@ -29,6 +30,11 @@ class SettingsForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @I Break down form building to more methods
+   *    type     : task
+   *    priority : low
+   *    labels   : coding-standards
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('commerce_amws_order.settings');
@@ -104,7 +110,87 @@ class SettingsForm extends ConfigFormBase {
       ],
     ];
 
+    // Purge settings.
+    $form['purge'] = $this->buildPurgeForm($config);
+
     return parent::buildForm($form, $form_state);
+  }
+
+  /**
+   * Builds the form elements for the order purge settings.
+   *
+   * @param \Drupal\Core\Config\Config $config
+   *   The Commerce Amazon MWS module settings configuration object.
+   *
+   * @return array
+   *   The render array containing the form elements.
+   */
+  public function buildPurgeForm(Config $config) {
+    $form = [
+      '#type' => 'details',
+      '#title' => $this->t('Purge orders'),
+    ];
+
+    // Basic purge settings.
+    $form['purge_status'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable purging orders'),
+      '#description' => $this->t(
+        'When purging orders is enabled, Amazon MWS orders and associated data
+        will be deleted after a set period of time after the order was imported.
+        This might be required in order to comply with Amazon data privacy and
+        security requirements.'
+      ),
+      '#default_value' => $config->get('purge.status'),
+    ];
+    $form['purge_interval'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Time period in seconds'),
+      '#description' => $this->t(
+        'The time period in seconds after the order was imported after which the
+        orders will be deleted. Set to 0 to delete all orders.'
+      ),
+      '#default_value' => $config->get('purge.interval'),
+      '#required' => TRUE,
+      '#states' => [
+        'visible' => [
+          ':input[name="purge_status"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    // Cron-related settings.
+    $form['purge_cron_status'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable purging orders during cron'),
+      '#description' => $this->t(
+        'If purging orders during cron is not enabled, you will need to use the
+        Drush command via alternative means e.g. manually or via Linux cron.
+        Otherwise the orders will not be purged.'
+      ),
+      '#default_value' => $config->get('purge.cron.status'),
+      '#states' => [
+        'visible' => [
+          ':input[name="purge_status"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+    $form['purge_cron_limit'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Limit number of orders to purge'),
+      '#description' => $this->t(
+        'You may limit the number of orders that will be purged during each cron
+        run. Set to 0 or leave empty to purge all orders that need purging.'
+      ),
+      '#default_value' => $config->get('purge.cron.limit'),
+      '#states' => [
+        'visible' => [
+          ':input[name="purge_cron_status"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    return $form;
   }
 
   /**
@@ -118,10 +204,26 @@ class SettingsForm extends ConfigFormBase {
         $this->t('The limit of orders to import must be a positive integer number or empty.')
       );
     }
+
+    $purge_cron_limit = $form_state->getValue('purge_cron_limit');
+    if (!ctype_digit($purge_cron_limit) && !empty($purge_cron_limit)) {
+      $form_state->setErrorByName(
+        'purge_cron_limit',
+        $this->t(
+          'The limit of orders to purge must be a positive integer number or
+          empty.'
+        )
+      );
+    }
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @I Break down form submission to more methods
+   *    type     : task
+   *    priority : low
+   *    labels   : coding-standards
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('commerce_amws_order.settings');
@@ -163,9 +265,33 @@ class SettingsForm extends ConfigFormBase {
     $config->set('cron.status', $cron_status)
       ->set('cron.limit', $cron_limit);
 
+    // Purge settings.
+    $this->submitPurgeForm($form_state, $config);
+
     $config->save();
 
     parent::submitForm($form, $form_state);
+  }
+
+  /**
+   * Sets the configuration values related to order purging.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state object.
+   * @param \Drupal\Core\Config\Config $config
+   *   The module configuration object.
+   */
+  public function submitPurgeForm(
+    FormStateInterface $form_state,
+    Config $config
+  ) {
+    // We convert the cron limit to 0 if no value is provided as NULL is
+    // interpreted the same i.e. no limit.
+    $config
+      ->set('purge.status', $form_state->getValue('purge_status'))
+      ->set('purge.interval', $form_state->getValue('purge_interval'))
+      ->set('purge.cron.status', $form_state->getValue('purge_cron_status'))
+      ->set('purge.cron.limit', (int) $form_state->getValue('purge_cron_limit'));
   }
 
 }
