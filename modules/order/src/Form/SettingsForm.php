@@ -286,10 +286,11 @@ class SettingsForm extends ConfigFormBase {
     Config $config
   ) {
     // We convert the cron limit to 0 if no value is provided as NULL is
-    // interpreted the same i.e. no limit.
+    // interpreted the same i.e. no limit. We do the same for the purge interval
+    // as well so that it is stored as an integer in the configuration.
     $config
       ->set('purge.status', $form_state->getValue('purge_status'))
-      ->set('purge.interval', $form_state->getValue('purge_interval'))
+      ->set('purge.interval', (int) $form_state->getValue('purge_interval'))
       ->set('purge.cron.status', $form_state->getValue('purge_cron_status'))
       ->set('purge.cron.limit', (int) $form_state->getValue('purge_cron_limit'));
   }
