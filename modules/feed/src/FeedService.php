@@ -65,6 +65,7 @@ class FeedService implements FeedServiceInterface {
     // Load enabled stores.
     $amws_store_ids = $this->amwsStoreStorage
       ->getQuery()
+      ->accessCheck(FALSE)
       ->condition('status', AmwsStoreInterface::STATUS_PUBLISHED)
       ->execute();
 
@@ -79,7 +80,7 @@ class FeedService implements FeedServiceInterface {
       if ($options['feed-limit']) {
         $load_options['limit'] = $options['feed-limit'];
       }
-      $feeds = $this->feedStorage->loadSubmitted($load_options);
+      $feeds = $this->feedStorage->loadSubmitted($load_options, FALSE);
 
       if (!$feeds) {
         continue;
@@ -108,6 +109,7 @@ class FeedService implements FeedServiceInterface {
     // Load enabled stores.
     $amws_store_ids = $this->amwsStoreStorage
       ->getQuery()
+      ->accessCheck(FALSE)
       ->condition('status', AmwsStoreInterface::STATUS_PUBLISHED)
       ->execute();
 
@@ -122,7 +124,7 @@ class FeedService implements FeedServiceInterface {
       if ($options['feed-limit']) {
         $load_options['limit'] = $options['feed-limit'];
       }
-      $feeds = $this->feedStorage->loadProcessed($load_options);
+      $feeds = $this->feedStorage->loadProcessed($load_options, FALSE);
 
       if (!$feeds) {
         continue;

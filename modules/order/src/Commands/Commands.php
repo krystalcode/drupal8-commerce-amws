@@ -98,6 +98,7 @@ class Commands extends DrushCommands {
 
     $amws_store_ids = $this->amwsStoreStorage
       ->getQuery()
+      ->accessCheck(FALSE)
       ->condition('status', AmwsStoreInterface::STATUS_PUBLISHED)
       ->execute();
 

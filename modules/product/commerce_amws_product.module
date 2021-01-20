@@ -53,6 +53,7 @@ function commerce_amws_product_cron() {
   $store_limit = $config->get('cron.store_limit');
   $query = $amws_store_storage
     ->getQuery()
+    ->accessCheck(FALSE)
     ->condition('status', AmwsStoreInterface::STATUS_PUBLISHED);
 
   if ($store_limit) {
@@ -74,7 +75,7 @@ function commerce_amws_product_cron() {
     if ($product_limit) {
       $load_options['limit'] = $product_limit;
     }
-    $amws_products = $amws_product_storage->loadQueued($load_options);
+    $amws_products = $amws_product_storage->loadQueued($load_options, FALSE);
 
     if (!$amws_products) {
       continue;
@@ -105,6 +106,7 @@ function commerce_amws_product_entity_update(EntityInterface $entity) {
     ->getStorage('commerce_amws_product');
   $amws_product_ids = $amws_product_storage
     ->getQuery()
+    ->accessCheck(FALSE)
     ->condition('product_id', $entity->id())
     ->execute();
 
@@ -454,6 +456,7 @@ function commerce_amws_form_alter(
   $amws_product_id = \Drupal::entityTypeManager()
     ->getStorage('commerce_amws_product')
     ->getQuery()
+    ->accessCheck(FALSE)
     ->condition('product_id', $product->id())
     ->range(0, 1)
     ->execute();

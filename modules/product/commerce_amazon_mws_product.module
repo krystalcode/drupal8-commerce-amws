@@ -5,6 +5,9 @@
  * Provides functionality for the Commerce Amazon MWS Product module.
  */
 
+// THIS FILE SEEMS IS LEFT BY MISTAKE AND SHOULD BE REMOVES?
+// There's already a commerce_amws_product.module.
+
 use Drupal\commerce_amws_product\Entity\ProductTypeInterface as AmwsProductTypeInterface;
 use Drupal\commerce_product\Entity\ProductType;
 use Drupal\entity\BundleFieldDefinition;
@@ -139,6 +142,7 @@ function commerce_amws_form_alter(
   $amws_product_id = \Drupal::entityTypeManager()
     ->getStorage('commerce_amws_product')
     ->getQuery()
+    ->accessCheck(FALSE)
     ->condition('product_id', $product->id())
     ->range(0, 1)
     ->execute();

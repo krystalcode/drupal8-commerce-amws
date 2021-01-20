@@ -59,6 +59,7 @@ function commerce_amws_order_cron__import() {
 
   $amws_store_ids = $amws_store_storage
     ->getQuery()
+    ->accessCheck(FALSE)
     ->condition('status', AmwsStoreInterface::STATUS_PUBLISHED)
     ->execute();
 

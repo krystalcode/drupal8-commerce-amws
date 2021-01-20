@@ -19,11 +19,15 @@ interface FeedStorageInterface extends ContentEntityStorageInterface {
    *   - statuses: A list of processing statuses; if provided, only feeds with
    *     the given statuses will be loaded.
    *   - store_id: The Amazon MWS store ID for which to load feeds.
+   * @param bool $access_check
+   *   Whether to add access check to the query that loads the feeds. It should
+   *   be set to FALSE when in Drush or Cron that run as the anonymous user but
+   *   still should have access to all feeds.
    *
    * @return \Drupal\commerce_amws_product\Entity\FeedInterface[]|null
    *   The feeds, or NULL if there is none.
    */
-  public function loadFeeds(array $options = []);
+  public function loadFeeds(array $options = [], $access_check = TRUE);
 
   /**
    * Loads feeds submitted to Amazon MWS.
@@ -37,11 +41,15 @@ interface FeedStorageInterface extends ContentEntityStorageInterface {
    *     submitted AND waiting to be processed. By default all feeds apart from
    *     cancelled and completed are loaded.
    *   - store_id: The Amazon MWS store ID for which to load feeds.
+   * @param bool $access_check
+   *   Whether to add access check to the query that loads the submitted feeds.
+   *   It should be set to FALSE when in Drush or Cron that run as the anonymous
+   *   user but still should have access to all feeds.
    *
    * @return \Drupal\commerce_amws_product\Entity\FeedInterface[]|null
    *   The submitted feeds, or NULL if there is none.
    */
-  public function loadSubmitted(array $options = []);
+  public function loadSubmitted(array $options = [], $access_check = TRUE);
 
   /**
    * Loads feeds that have already been processed.
@@ -54,10 +62,14 @@ interface FeedStorageInterface extends ContentEntityStorageInterface {
    *     default feeds that are marked by Amazon MWS as Done or Cancelled are
    *     considered as processed.
    *   - store_id: The Amazon MWS store ID for which to load feeds.
+   * @param bool $access_check
+   *   Whether to add access check to the query that loads the processed feeds.
+   *   It should be set to FALSE when in Drush or Cron that run as the anonymous
+   *   user but still should have access to all feeds.
    *
    * @return \Drupal\commerce_amws_product\Entity\FeedInterface[]|null
    *   The processed feeds, or NULL if there is none.
    */
-  public function loadProcessed(array $options = []);
+  public function loadProcessed(array $options = [], $access_check = TRUE);
 
 }

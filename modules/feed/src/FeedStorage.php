@@ -13,14 +13,14 @@ class FeedStorage extends SqlContentEntityStorage implements FeedStorageInterfac
   /**
    * {@inheritdoc}
    */
-  public function loadFeeds(array $options = []) {
-    return $this->buildFeedsQueryAndExecute($options);
+  public function loadFeeds(array $options = [], $access_check = TRUE) {
+    return $this->buildFeedsQueryAndExecute($options, $access_check);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function loadSubmitted(array $options = []) {
+  public function loadSubmitted(array $options = [], $access_check = TRUE) {
     $options = array_merge(
       [
         'limit' => NULL,
@@ -36,13 +36,13 @@ class FeedStorage extends SqlContentEntityStorage implements FeedStorageInterfac
       $options
     );
 
-    return $this->buildFeedsQueryAndExecute($options);
+    return $this->buildFeedsQueryAndExecute($options, $access_check);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function loadProcessed(array $options = []) {
+  public function loadProcessed(array $options = [], $access_check = TRUE) {
     $options = array_merge(
       [
         'limit' => NULL,
@@ -56,7 +56,7 @@ class FeedStorage extends SqlContentEntityStorage implements FeedStorageInterfac
       $options
     );
 
-    $query = $this->buildFeedsQuery($options);
+    $query = $this->buildFeedsQuery($options, $access_check);
 
     if ($options['with_result']) {
       $query->condition('result', NULL, 'IS NOT NULL');
@@ -83,7 +83,10 @@ class FeedStorage extends SqlContentEntityStorage implements FeedStorageInterfac
    * @see self::loadFeeds()
    *   For the list of available options.
    */
-  protected function buildFeedsQuery(array $options = []) {
+  protected function buildFeedsQuery(
+    array $options = [],
+    $access_check = TRUE
+  ) {
     $options = array_merge(
       [
         'limit' => NULL,
@@ -93,7 +96,7 @@ class FeedStorage extends SqlContentEntityStorage implements FeedStorageInterfac
       $options
     );
 
-    $query = $this->getQuery();
+    $query = $this->getQuery()->accessCheck($access_check);
 
     if ($options['statuses']) {
       $query->condition('processing_status', $options['statuses'], 'IN');
@@ -122,8 +125,11 @@ class FeedStorage extends SqlContentEntityStorage implements FeedStorageInterfac
    * @see self::loadFeeds()
    *   For the list of available options.
    */
-  protected function buildFeedsQueryAndExecute(array $options = []) {
-    $ids = $this->buildFeedsQuery($options)->execute();
+  protected function buildFeedsQueryAndExecute(
+    array $options = [],
+    $access_check = TRUE
+  ) {
+    $ids = $this->buildFeedsQuery($options, $access_check)->execute();
 
     if (!$ids) {
       return [];

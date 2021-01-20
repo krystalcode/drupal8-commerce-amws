@@ -55,6 +55,7 @@ class Commands extends DrushCommands {
     // Load enabled stores.
     $amws_store_ids = $this->amwsStoreStorage
       ->getQuery()
+      ->accessCheck(FALSE)
       ->condition('status', AmwsStoreInterface::STATUS_PUBLISHED)
       ->execute();
 
@@ -69,7 +70,10 @@ class Commands extends DrushCommands {
       if ($options['product-limit']) {
         $load_options['limit'] = $options['product-limit'];
       }
-      $amws_products = $this->amwsProductStorage->loadQueued($load_options);
+      $amws_products = $this->amwsProductStorage->loadQueued(
+        $load_options,
+        FALSE
+      );
 
       if (!$amws_products) {
         continue;

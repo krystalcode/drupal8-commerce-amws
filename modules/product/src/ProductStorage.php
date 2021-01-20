@@ -12,8 +12,10 @@ class ProductStorage extends SqlContentEntityStorage implements ProductStorageIn
   /**
    * {@inheritdoc}
    */
-  public function loadQueued(array $options = []) {
-    $query = $this->getQuery()->condition('state', 'queued');
+  public function loadQueued(array $options = [], $access_check = TRUE) {
+    $query = $this->getQuery()
+      ->condition('state', 'queued')
+      ->accessCheck($access_check);
 
     if (!empty($options['store_id'])) {
       $query->condition('amws_stores', $options['store_id']);
