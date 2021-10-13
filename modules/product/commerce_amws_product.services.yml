@@ -14,3 +14,9 @@ services:
     arguments: ['@entity_type.manager']
     tags:
       - { name: drush.command }
+
+  # Feed type requester.
+  commerce_amws_product.feed_type_requester:
+    class: 'Drupal\commerce_amws_product\Feed\FeedTypeRequester'
+    tags:
+      - { name: 'commerce_amws_feed.feed_type_requester' }
