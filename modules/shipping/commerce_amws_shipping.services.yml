@@ -8,3 +8,13 @@ services:
     arguments: ['@commerce_amws_shipping.shipment_service']
     tags:
       - { name: event_subscriber }
+
+  # Feed type requester.
+  # @I Declare feed type requesters only if the Feed submodule is installed
+  #    type     : task
+  #    priority : low
+  #    labels   : feed, service
+  commerce_amws_shipping.feed_type_requester:
+    class: 'Drupal\commerce_amws_shipping\Feed\FeedTypeRequester'
+    tags:
+      - { name: 'commerce_amws_feed.feed_type_requester' }
