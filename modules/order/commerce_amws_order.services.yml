@@ -1,21 +1,5 @@
 services:
-  commerce_amws_order.order_service:
-    class: Drupal\commerce_amws_order\OrderService
-    arguments: ['@entity_type.manager', '@datetime.time', '@event_dispatcher', '@logger.factory']
-
-  commerce_amws_order.order_purger:
-    class: Drupal\commerce_amws_order\OrderPurger
-    arguments:
-      - '@config.factory'
-      - '@entity_type.manager'
-      - '@event_dispatcher'
-      - '@logger.channel.commerce_amws_order'
-      - '@datetime.time'
-
-  commerce_amws_order.helper_service:
-    class: Drupal\commerce_amws_order\HelperService
-    arguments: ['@entity_type.manager', '@event_dispatcher', '@config.factory', '@logger.factory']
-
+  # Event subscribers.
   commerce_amws_order.order_number_subscriber:
     class: Drupal\commerce_amws_order\EventSubscriber\OrderNumberSubscriber
     tags:
@@ -23,10 +7,21 @@ services:
 
   commerce_amws_order.order_billing_profile_subscriber:
     class: Drupal\commerce_amws_order\EventSubscriber\OrderBillingProfileSubscriber
-    arguments: ['@entity_type.manager', '@event_dispatcher', '@config.factory', '@commerce_amws_order.helper_service', '@logger.factory']
+    arguments:
+      - '@entity_type.manager'
+      - '@event_dispatcher'
+      - '@config.factory'
+      - '@commerce_amws_order.helper_service'
+      - '@logger.factory'
     tags:
       - { name: event_subscriber }
 
+  # Logger channel.
+  logger.channel.commerce_amws_order:
+    parent: logger.channel_base
+    arguments: ['commerce_amws_order']
+
+  # Drush commands.
   commerce_amws_order.commands:
     class: \Drupal\commerce_amws_order\Commands\Commands
     arguments:
@@ -39,11 +34,33 @@ services:
 
   commerce_amws_order.dev_commands:
     class: \Drupal\commerce_amws_order\Commands\DevCommands
-    arguments: ['@entity_type.manager']
+    arguments:
+      - '@entity_type.manager'
     tags:
       - { name: drush.command }
 
-  logger.channel.commerce_amws_order:
-    class: Drupal\Core\Logger\LoggerChannel
-    factory: logger.factory:get
-    arguments: ['commerce_amws_order']
+  # Other services.
+  commerce_amws_order.order_service:
+    class: Drupal\commerce_amws_order\OrderService
+    arguments:
+      - '@entity_type.manager'
+      - '@datetime.time'
+      - '@event_dispatcher'
+      - '@logger.factory'
+
+  commerce_amws_order.order_purger:
+    class: Drupal\commerce_amws_order\OrderPurger
+    arguments:
+      - '@config.factory'
+      - '@entity_type.manager'
+      - '@event_dispatcher'
+      - '@logger.channel.commerce_amws_order'
+      - '@datetime.time'
+
+  commerce_amws_order.helper_service:
+    class: Drupal\commerce_amws_order\HelperService
+    arguments:
+      - '@entity_type.manager'
+      - '@event_dispatcher'
+      - '@config.factory'
+      - '@logger.factory'

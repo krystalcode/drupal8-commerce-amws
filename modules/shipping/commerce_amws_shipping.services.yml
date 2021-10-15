@@ -1,11 +1,9 @@
 services:
-  commerce_amws_shipping.shipment_service:
-    class: Drupal\commerce_amws_shipping\ShipmentService
-    arguments: ['@entity_type.manager', '@commerce_amws_order.helper_service', '@event_dispatcher', '@config.factory', '@logger.factory']
-
+  # Event subscribers.
   commerce_amws_shipping.order_shipment_subscriber:
     class: Drupal\commerce_amws_shipping\EventSubscriber\OrderShipmentSubscriber
-    arguments: ['@commerce_amws_shipping.shipment_service']
+    arguments:
+      - '@commerce_amws_shipping.shipment_service'
     tags:
       - { name: event_subscriber }
 
@@ -18,3 +16,13 @@ services:
     class: 'Drupal\commerce_amws_shipping\Feed\FeedTypeRequester'
     tags:
       - { name: 'commerce_amws_feed.feed_type_requester' }
+
+  # Other services.
+  commerce_amws_shipping.shipment_service:
+    class: Drupal\commerce_amws_shipping\ShipmentService
+    arguments:
+      - '@entity_type.manager'
+      - '@commerce_amws_order.helper_service'
+      - '@event_dispatcher'
+      - '@config.factory'
+      - '@logger.factory'
