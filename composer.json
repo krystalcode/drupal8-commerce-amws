@@ -15,5 +15,8 @@
         "cpigroup/php-amazon-mws": "2.0.0",
         "jlevers/selling-partner-api": "^4.0"
     },
+    "suggest": {
+        "spatie/array-to-xml": "^3.0"
+    },
     "minimum-stability": "dev"
 }
