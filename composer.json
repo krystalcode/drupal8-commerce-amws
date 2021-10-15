@@ -12,7 +12,8 @@
     },
     "require": {
         "drupal/commerce": "~8.2",
-        "cpigroup/php-amazon-mws": "2.0.0"
+        "cpigroup/php-amazon-mws": "2.0.0",
+        "jlevers/selling-partner-api": "^4.0"
     },
     "minimum-stability": "dev"
 }
