@@ -7,6 +7,11 @@ services:
     tags:
       - { name: 'service_collector', call: 'addRequester', tag: 'commerce_amws_feed.feed_type_requester' }
 
+  # Logger channel.
+  logger.channel.commerce_amws_feed:
+    parent: logger.channel_base
+    arguments: ['commerce_amws_feed']
+
   # Other services.
   commerce_amws_feed.feed_service:
     class: \Drupal\commerce_amws_feed\FeedService

@@ -5,6 +5,11 @@ services:
     tags:
       - { name: 'commerce_amws_feed.feed_type_requester' }
 
+  # Logger channel.
+  logger.channel.commerce_amws_product:
+    parent: logger.channel_base
+    arguments: ['commerce_amws_product']
+
   # Drush commands.
   commerce_amws_product.dev_commands:
     class: \Drupal\commerce_amws_product\Commands\DevCommands

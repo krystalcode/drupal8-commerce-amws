@@ -7,6 +7,11 @@ services:
     tags:
       - { name: event_subscriber }
 
+  # Logger channel.
+  logger.channel.commerce_amws_shipping:
+    parent: logger.channel_base
+    arguments: ['commerce_amws_shipping']
+
   # Feed type requester.
   # @I Declare feed type requesters only if the Feed submodule is installed
   #    type     : task
