@@ -12,8 +12,7 @@
     },
     "require": {
         "drupal/commerce": "^2.0",
-        "cpigroup/php-amazon-mws": "2.0.0",
-        "jlevers/selling-partner-api": "^4.0"
+        "cpigroup/php-amazon-mws": "2.0.0"
     },
     "suggest": {
         "spatie/array-to-xml": "^3.0"
