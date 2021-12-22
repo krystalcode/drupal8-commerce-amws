@@ -2,9 +2,9 @@ name: Commerce Amazon MWS Product
 type: module
 description: 'Provides integration features for syncing products to Amazon MWS'
 package: Commerce Amazon MWS
-core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
-  - commerce_amws
+  - commerce_amws:commerce_amws
   - commerce:commerce_product
 config_devel:
   install:

@@ -2,7 +2,7 @@ name: Commerce Amazon MWS Order
 type: module
 description: 'Provides integration features for syncing order from  Amazon MWS'
 package: Commerce Amazon MWS
-core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
   - commerce_amws:commerce_amws
   - commerce:commerce_order
